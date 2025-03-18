@@ -440,7 +440,8 @@ footer {
 
 .tab-content {
     display: none;
-    padding: 20px;
+    padding: 30px;
+    padding-bottom: 50px;
     border: 1px solid #ccc;
     border-top: none;
     border-radius: 0 0 8px 8px;
@@ -454,6 +455,7 @@ footer {
     background-color: #e0e0e0;
     border-radius: 10px;
     margin-bottom: 1rem;
+    margin-top:1rem ;
 }
 
 .progress-bar {
@@ -462,20 +464,20 @@ footer {
     border-radius: 10px;
     width: 0;
     transition: width 0.5s;
+    margin-bottom: 1rem;
 }
 
-/* Tooltip styles */
 .tooltip {
     position: relative;
     display: inline-block;
-    cursor: pointer;
 }
 
-.tooltip .tooltip-text {
+.tooltip-text {
     visibility: hidden;
+    opacity: 0;
     width: 120px;
     background-color: #333;
-    color: #fff;
+    color: white;
     text-align: center;
     border-radius: 6px;
     padding: 5px;
@@ -484,13 +486,18 @@ footer {
     bottom: 125%;
     left: 50%;
     margin-left: -60px;
-    opacity: 0;
     transition: opacity 0.3s;
 }
 
-.tooltip:hover .tooltip-text {
-    visibility: visible;
-    opacity: 1;
+.tooltip-text::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #333 transparent transparent transparent;
 }
 
 /* Drag and drop styles */

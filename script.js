@@ -330,32 +330,53 @@ function initDatePicker() {
 function initSlider() {
     const slider = document.getElementById('slider');
     const sliderValue = document.getElementById('slider-value');
-    
+    const resetButton = document.getElementById('reset-slider');
+
     if (slider && sliderValue) {
-        slider.addEventListener('input', function() {
+        slider.addEventListener('input', function () {
             sliderValue.textContent = this.value;
         });
+
+        if (resetButton) {
+            resetButton.addEventListener('click', function () {
+                slider.value = 50; // Reset slider to default value
+                sliderValue.textContent = 50; // Update displayed value
+            });
+        }
     }
 }
+
 
 function initProgressBar() {
     const progressBar = document.getElementById('progress-bar');
     const progressBtn = document.getElementById('progress-btn');
     
     if (progressBar && progressBtn) {
+        // Make sure we only add one click listener
         progressBtn.addEventListener('click', function() {
+            // Disable the button immediately to prevent multiple clicks
+            progressBtn.disabled = true;
+            progressBtn.textContent = 'Loading... 0%';
+            
+            // Reset the progress bar width
+            progressBar.style.width = '0%';
+            
             let width = 0;
-            const interval = setInterval(function() {
+            // Use requestAnimationFrame instead of setInterval for smoother animation
+            function updateProgress() {
                 if (width >= 100) {
-                    clearInterval(interval);
                     progressBtn.textContent = 'Complete!';
-                    progressBtn.disabled = true;
                 } else {
-                    width += 5;
+                    width += 1; // Smaller increments for smoother animation
                     progressBar.style.width = width + '%';
                     progressBtn.textContent = `Loading... ${width}%`;
+                    // Request the next frame
+                    setTimeout(updateProgress, 50); // 20 updates per second is smoother
                 }
-            }, 200);
+            }
+            
+            // Start the animation
+            updateProgress();
         });
     }
 }
@@ -370,6 +391,27 @@ function initTooltips() {
             tooltipText.className = 'tooltip-text';
             tooltipText.textContent = text;
             tooltip.appendChild(tooltipText);
+            
+            // Add data attributes for automation testing
+            tooltipText.setAttribute('data-testid', 'tooltip-content');
+            tooltipText.setAttribute('aria-hidden', 'true');
+            
+            // Add hover event listeners
+            tooltip.addEventListener('mouseenter', function() {
+                tooltipText.style.visibility = 'visible';
+                tooltipText.style.opacity = '1';
+                
+                // Update attribute for automation testing
+                tooltipText.setAttribute('data-visible', 'true');
+            });
+            
+            tooltip.addEventListener('mouseleave', function() {
+                tooltipText.style.visibility = 'hidden';
+                tooltipText.style.opacity = '0';
+                
+                // Update attribute for automation testing
+                tooltipText.setAttribute('data-visible', 'false');
+            });
         }
     });
 }
