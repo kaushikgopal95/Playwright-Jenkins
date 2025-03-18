@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iFrame Content</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f0f0f0;
+        }
+        .container {
+            background-color: white;
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 5px;
+        }
+        h1 {
+            color: #4682B4;
+            font-size: 24px;
+            margin-top: 0;
+        }
+        button {
+            background-color: #4682B4;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #3B6F9D;
+        }
+        #message-status {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #e8f4ff;
+            border-left: 4px solid #4682B4;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>iFrame Content Page</h1>
+        <p>This is a simple page loaded inside an iframe. You can communicate with the parent page using messages.</p>
+        
+        <button id="send-message-btn">Send Message to Parent</button>
+        
+        <div id="message-status"></div>
+    </div>
+
+    <script>
+        // Get our button and status display
+        const sendButton = document.getElementById('send-message-btn');
+        const messageStatus = document.getElementById('message-status');
+        
+        // When the button is clicked, send a message to the parent page
+        sendButton.addEventListener('click', function() {
+            // Try to send a message to the parent window
+            try {
+                window.parent.postMessage({
+                    message: 'Hello from the iframe! Button was clicked.'
+                }, '*');
+                
+                // Show success message
+                messageStatus.style.display = 'block';
+                messageStatus.textContent = 'Message sent to parent page!';
+                
+                // Hide the message after 3 seconds
+                setTimeout(function() {
+                    messageStatus.style.display = 'none';
+                }, 3000);
+            } catch (error) {
+                // If there's an error, show it
+                messageStatus.style.display = 'block';
+                messageStatus.textContent = 'Error sending message: ' + error.message;
+            }
+        });
+        
+        // Listen for messages FROM the parent page
+        window.addEventListener('message', function(event) {
+            // When we receive a message, display it
+            if (event.data && event.data.message) {
+                messageStatus.style.display = 'block';
+                messageStatus.textContent = 'Message received: ' + event.data.message;
+                
+                // Hide the message after 3 seconds
+                setTimeout(function() {
+                    messageStatus.style.display = 'none';
+                }, 3000);
+            }
+        });
+    </script>
+</body>
+</html>
