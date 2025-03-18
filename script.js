@@ -850,44 +850,40 @@ function initColorPicker() {
 
 // Modal Window functionality
 // Make sure this is in a <script> tag
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOM loaded'); // Add this to check if script loads at all
-    initModalWindow();
-});
 
-function initModalWindow() {
-    const modal = document.getElementById('modal');
-    const openModalBtn = document.getElementById('open-modal');
-    const closeModalBtn = document.querySelector('.close-modal');
+
+document.addEventListener("DOMContentLoaded", function () {
+    const modal = document.getElementById("modal");
+    const openModalBtn = document.getElementById("open-modal");
+    const closeModalBtn = document.querySelector(".close-modal");
     const confirmBtn = document.getElementById('modal-confirm');
-    
-    //console.log('Modal elements:', modal, openModalBtn); 
-    //console.log("Button found", openModalBtn);// Debug check
-    
+
+    // Ensure modal is hidden on load
+    modal.style.display = "none";
+
     // Open modal when button is clicked
-    openModalBtn.addEventListener('click', function() {
-        modal.style.display = 'flex';
-        console.log('Opening modal');
+    openModalBtn.addEventListener("click", function () {
+        modal.style.display = "flex";
     });
-    
-    // Close modal when close button is clicked
-    closeModalBtn.addEventListener('click', function() {
-        modal.style.display = 'none';
+
+    // Close modal when the close button is clicked
+    closeModalBtn.addEventListener("click", function () {
+        modal.style.display = "none";
     });
-    
+
     // Close modal when confirm button is clicked
     confirmBtn.addEventListener('click', function() {
         alert('Action confirmed!');
         modal.style.display = 'none';
     });
-    
+
     // Close modal when clicking outside the modal content
-    window.addEventListener('click', function(e) {
+    window.addEventListener("click", function (e) {
         if (e.target === modal) {
-            modal.style.display = 'none';
+            modal.style.display = "none";
         }
     });
-}
+});
 
 
 // ======= IFRAME SECTION =======
