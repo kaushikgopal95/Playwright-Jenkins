@@ -73,21 +73,38 @@ function initForms() {
     }
 }
 
-// Table Functions
 function initTables() {
     const tableSearch = document.getElementById('table-search');
     const tableFilter = document.getElementById('table-filter');
     const tableHeaders = document.querySelectorAll('th[data-sort]');
+    
+    // Pagination variables
+    const rowsPerPage = 5;
+    let currentPage = 1;
+    let filteredRows = [];
+    
+    // Get existing pagination elements
+    const prevButton = document.getElementById('prev-page');
+    const nextButton = document.getElementById('next-page');
+    const pageInfo = document.getElementById('page-info');
+    
+    // Initialize pagination
+    initPagination();
     
     if (tableSearch) {
         tableSearch.addEventListener('input', function() {
             const searchTerm = this.value.toLowerCase();
             const rows = document.querySelectorAll('#user-table tbody tr');
             
-            rows.forEach(row => {
+            filteredRows = Array.from(rows).filter(row => {
                 const text = row.textContent.toLowerCase();
-                row.style.display = text.includes(searchTerm) ? '' : 'none';
+                const matches = text.includes(searchTerm);
+                return matches;
             });
+            
+            // Reset to first page when searching
+            currentPage = 1;
+            updatePagination();
         });
     }
     
@@ -96,13 +113,13 @@ function initTables() {
             const filterValue = this.value;
             const rows = document.querySelectorAll('#user-table tbody tr');
             
-            rows.forEach(row => {
-                if (filterValue === 'all' || row.getAttribute('data-department') === filterValue) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
+            filteredRows = Array.from(rows).filter(row => {
+                return filterValue === 'all' || row.getAttribute('data-department') === filterValue;
             });
+            
+            // Reset to first page when filtering
+            currentPage = 1;
+            updatePagination();
         });
     }
     
@@ -110,7 +127,6 @@ function initTables() {
         tableHeaders.forEach(header => {
             header.addEventListener('click', function() {
                 const sortField = this.getAttribute('data-sort');
-                const rows = Array.from(document.querySelectorAll('#user-table tbody tr'));
                 const isAscending = this.classList.contains('asc');
                 
                 // Clear existing sort classes
@@ -122,7 +138,7 @@ function initTables() {
                 this.classList.add(isAscending ? 'desc' : 'asc');
                 
                 // Sort rows
-                rows.sort((a, b) => {
+                filteredRows.sort((a, b) => {
                     const aValue = a.querySelector(`td:nth-child(${getColumnIndex(sortField)})`).textContent;
                     const bValue = b.querySelector(`td:nth-child(${getColumnIndex(sortField)})`).textContent;
                     
@@ -137,9 +153,7 @@ function initTables() {
                     }
                 });
                 
-                // Reorder rows
-                const tbody = document.querySelector('#user-table tbody');
-                rows.forEach(row => tbody.appendChild(row));
+                updatePagination();
             });
         });
     }
@@ -156,275 +170,343 @@ function initTables() {
     }
     
     // Table row actions
-    const editButtons = document.querySelectorAll('.edit-btn');
-    const deleteButtons = document.querySelectorAll('.delete-btn');
-    
-    editButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const id = this.getAttribute('data-id');
-            alert(`Edit user with ID: ${id}`);
-        });
-    });
-    
-    deleteButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const id = this.getAttribute('data-id');
-            const confirmed = confirm(`Are you sure you want to delete user with ID: ${id}?`);
-            
-            if (confirmed) {
-                const row = this.closest('tr');
-                row.remove();
-                alert(`User with ID: ${id} has been deleted`);
-            }
-        });
-    });
-}
-
-// Widget Functions
-function initWidgets() {
-    initTabs();
-    initDatePicker();
-    initSlider();
-    initProgressBar();
-    initTooltips();
-}
-
-function initTabs() {
-    const tabButtons = document.querySelectorAll('.tab-button');
-    
-    tabButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const tabId = this.getAttribute('data-tab');
-            
-            // Hide all tabs
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.style.display = 'none';
+    function attachRowEventListeners() {
+        const editButtons = document.querySelectorAll('.edit-btn');
+        const deleteButtons = document.querySelectorAll('.delete-btn');
+        
+        editButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const id = this.getAttribute('data-id');
+                alert(`Edit user with ID: ${id}`);
             });
-            
-            // Remove active class from all buttons
-            document.querySelectorAll('.tab-button').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            
-            // Show the selected tab
-            document.getElementById(tabId).style.display = 'block';
-            
-            // Add active class to the clicked button
-            this.classList.add('active');
-        });
-    });
-}
-
-function initDatePicker() {
-    const datepicker = document.getElementById('datepicker');
-    const calendar = document.getElementById('datepicker-calendar');
-    
-    if (datepicker && calendar) {
-        datepicker.addEventListener('click', function() {
-            calendar.style.display = calendar.style.display === 'block' ? 'none' : 'block';
-            
-            // Generate calendar if it's empty
-            if (calendar.children.length === 0) {
-                generateCalendar();
-            }
         });
         
-        // Close calendar when clicking outside
-        document.addEventListener('click', function(e) {
-            if (!datepicker.contains(e.target) && !calendar.contains(e.target)) {
-                calendar.style.display = 'none';
-            }
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const id = this.getAttribute('data-id');
+                const confirmed = confirm(`Are you sure you want to delete user with ID: ${id}?`);
+                
+                if (confirmed) {
+                    const row = this.closest('tr');
+                    row.remove();
+                    
+                    // After removing a row, refresh pagination
+                    initPagination();
+                    alert(`User with ID: ${id} has been deleted`);
+                }
+            });
         });
+    }
+    
+    // Pagination functions
+    function initPagination() {
+        const rows = document.querySelectorAll('#user-table tbody tr');
+        filteredRows = Array.from(rows);
         
-        function generateCalendar() {
-            const date = new Date();
-            const year = date.getFullYear();
-            const month = date.getMonth();
-            
-            const header = document.createElement('div');
-            header.className = 'datepicker-header';
-            
-            const prevBtn = document.createElement('button');
-            prevBtn.textContent = '←';
-            prevBtn.addEventListener('click', function() {
-                date.setMonth(date.getMonth() - 1);
-                updateCalendar();
-            });
-            
-            const nextBtn = document.createElement('button');
-            nextBtn.textContent = '→';
-            nextBtn.addEventListener('click', function() {
-                date.setMonth(date.getMonth() + 1);
-                updateCalendar();
-            });
-            
-            const monthYear = document.createElement('span');
-            monthYear.textContent = `${date.toLocaleString('default', { month: 'long' })} ${date.getFullYear()}`;
-            
-            header.appendChild(prevBtn);
-            header.appendChild(monthYear);
-            header.appendChild(nextBtn);
-            
-            calendar.appendChild(header);
-            
-            const daysGrid = document.createElement('div');
-            daysGrid.className = 'datepicker-grid';
-            
-            // Add day names
-            const dayNames = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
-            dayNames.forEach(day => {
-                const dayElement = document.createElement('div');
-                dayElement.textContent = day;
-                dayElement.className = 'datepicker-day-name';
-                daysGrid.appendChild(dayElement);
-            });
-            
-            calendar.appendChild(daysGrid);
-            
-            function updateCalendar() {
-                monthYear.textContent = `${date.toLocaleString('default', { month: 'long' })} ${date.getFullYear()}`;
-                
-                // Clear previous days
-                while (daysGrid.children.length > 7) {
-                    daysGrid.removeChild(daysGrid.lastChild);
+        // Add pagination event listeners
+        if (prevButton) {
+            prevButton.addEventListener('click', function() {
+                if (currentPage > 1) {
+                    currentPage--;
+                    updatePagination();
                 }
-                
-                // Get first day of month and number of days
-                const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
-                const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
-                const daysInMonth = lastDay.getDate();
-                
-                // Add empty cells before first day
-                for (let i = 0; i < firstDay.getDay(); i++) {
-                    const emptyDay = document.createElement('div');
-                    emptyDay.className = 'datepicker-day empty';
-                    daysGrid.appendChild(emptyDay);
-                }
-                
-                // Add days of month
-                for (let i = 1; i <= daysInMonth; i++) {
-                    const dayElement = document.createElement('div');
-                    dayElement.textContent = i;
-                    dayElement.className = 'datepicker-day';
-                    
-                    const currentDate = new Date();
-                    if (i === currentDate.getDate() && date.getMonth() === currentDate.getMonth() && date.getFullYear() === currentDate.getFullYear()) {
-                        dayElement.classList.add('current');
-                    }
-                    
-                    dayElement.addEventListener('click', function() {
-                        const selectedDate = new Date(date.getFullYear(), date.getMonth(), i);
-                        datepicker.value = selectedDate.toLocaleDateString();
-                        calendar.style.display = 'none';
-                    });
-                    
-                    daysGrid.appendChild(dayElement);
-                }
-            }
-            
-            updateCalendar();
+            });
         }
+        
+        if (nextButton) {
+            nextButton.addEventListener('click', function() {
+                const totalPages = Math.ceil(filteredRows.length / rowsPerPage);
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    updatePagination();
+                }
+            });
+        }
+        
+        updatePagination();
+    }
+    
+    function updatePagination() {
+        const startIndex = (currentPage - 1) * rowsPerPage;
+        const endIndex = startIndex + rowsPerPage;
+        const totalPages = Math.ceil(filteredRows.length / rowsPerPage);
+        
+        // Update page info text
+        if (pageInfo) {
+            pageInfo.textContent = `Page ${currentPage} of ${totalPages || 1}`;
+        }
+        
+        // Update button states
+        if (prevButton) {
+            prevButton.disabled = currentPage === 1;
+        }
+        
+        if (nextButton) {
+            nextButton.disabled = currentPage >= totalPages;
+        }
+        
+        // Show only rows for current page
+        const allRows = document.querySelectorAll('#user-table tbody tr');
+        
+        // Hide all rows first
+        allRows.forEach(row => {
+            row.style.display = 'none';
+        });
+        
+        // Show only the rows for current page
+        filteredRows.slice(startIndex, endIndex).forEach(row => {
+            row.style.display = '';
+        });
+        
+        // Reattach event listeners for visible rows
+        attachRowEventListeners();
     }
 }
+// Widget Functions
+// function initWidgets() {
+//     initTabs();
+//     initDatePicker();
+//     initSlider();
+//     initProgressBar();
+//     initTooltips();
+// }
+
+// function initTabs() {
+//     const tabButtons = document.querySelectorAll('.tab-button');
+    
+//     tabButtons.forEach(button => {
+//         button.addEventListener('click', function() {
+//             const tabId = this.getAttribute('data-tab');
+            
+//             // Hide all tabs
+//             document.querySelectorAll('.tab-content').forEach(tab => {
+//                 tab.style.display = 'none';
+//             });
+            
+//             // Remove active class from all buttons
+//             document.querySelectorAll('.tab-button').forEach(btn => {
+//                 btn.classList.remove('active');
+//             });
+            
+//             // Show the selected tab
+//             document.getElementById(tabId).style.display = 'block';
+            
+//             // Add active class to the clicked button
+//             this.classList.add('active');
+//         });
+//     });
+// }
+
+// function initDatePicker() {
+//     const datepicker = document.getElementById('datepicker');
+//     const calendar = document.getElementById('datepicker-calendar');
+    
+//     if (datepicker && calendar) {
+//         datepicker.addEventListener('click', function() {
+//             calendar.style.display = calendar.style.display === 'block' ? 'none' : 'block';
+            
+//             // Generate calendar if it's empty
+//             if (calendar.children.length === 0) {
+//                 generateCalendar();
+//             }
+//         });
+        
+//         // Close calendar when clicking outside
+//         document.addEventListener('click', function(e) {
+//             if (!datepicker.contains(e.target) && !calendar.contains(e.target)) {
+//                 calendar.style.display = 'none';
+//             }
+//         });
+        
+//         function generateCalendar() {
+//             const date = new Date();
+//             const year = date.getFullYear();
+//             const month = date.getMonth();
+            
+//             const header = document.createElement('div');
+//             header.className = 'datepicker-header';
+            
+//             const prevBtn = document.createElement('button');
+//             prevBtn.textContent = '←';
+//             prevBtn.addEventListener('click', function() {
+//                 date.setMonth(date.getMonth() - 1);
+//                 updateCalendar();
+//             });
+            
+//             const nextBtn = document.createElement('button');
+//             nextBtn.textContent = '→';
+//             nextBtn.addEventListener('click', function() {
+//                 date.setMonth(date.getMonth() + 1);
+//                 updateCalendar();
+//             });
+            
+//             const monthYear = document.createElement('span');
+//             monthYear.textContent = `${date.toLocaleString('default', { month: 'long' })} ${date.getFullYear()}`;
+            
+//             header.appendChild(prevBtn);
+//             header.appendChild(monthYear);
+//             header.appendChild(nextBtn);
+            
+//             calendar.appendChild(header);
+            
+//             const daysGrid = document.createElement('div');
+//             daysGrid.className = 'datepicker-grid';
+            
+//             // Add day names
+//             const dayNames = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+//             dayNames.forEach(day => {
+//                 const dayElement = document.createElement('div');
+//                 dayElement.textContent = day;
+//                 dayElement.className = 'datepicker-day-name';
+//                 daysGrid.appendChild(dayElement);
+//             });
+            
+//             calendar.appendChild(daysGrid);
+            
+//             function updateCalendar() {
+//                 monthYear.textContent = `${date.toLocaleString('default', { month: 'long' })} ${date.getFullYear()}`;
+                
+//                 // Clear previous days
+//                 while (daysGrid.children.length > 7) {
+//                     daysGrid.removeChild(daysGrid.lastChild);
+//                 }
+                
+//                 // Get first day of month and number of days
+//                 const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+//                 const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+//                 const daysInMonth = lastDay.getDate();
+                
+//                 // Add empty cells before first day
+//                 for (let i = 0; i < firstDay.getDay(); i++) {
+//                     const emptyDay = document.createElement('div');
+//                     emptyDay.className = 'datepicker-day empty';
+//                     daysGrid.appendChild(emptyDay);
+//                 }
+                
+//                 // Add days of month
+//                 for (let i = 1; i <= daysInMonth; i++) {
+//                     const dayElement = document.createElement('div');
+//                     dayElement.textContent = i;
+//                     dayElement.className = 'datepicker-day';
+                    
+//                     const currentDate = new Date();
+//                     if (i === currentDate.getDate() && date.getMonth() === currentDate.getMonth() && date.getFullYear() === currentDate.getFullYear()) {
+//                         dayElement.classList.add('current');
+//                     }
+                    
+//                     dayElement.addEventListener('click', function() {
+//                         const selectedDate = new Date(date.getFullYear(), date.getMonth(), i);
+//                         datepicker.value = selectedDate.toLocaleDateString();
+//                         calendar.style.display = 'none';
+//                     });
+                    
+//                     daysGrid.appendChild(dayElement);
+//                 }
+//             }
+            
+//             updateCalendar();
+//         }
+//     }
+// }
 
 // Your JavaScript file (e.g., slider.js)
 
-function initSlider() {
-    const slider = document.getElementById('slider');
-    const sliderValue = document.getElementById('slider-value');
-    const resetButton = document.getElementById('reset-slider');
+// function initSlider() {
+//     const slider = document.getElementById('slider');
+//     const sliderValue = document.getElementById('slider-value');
+//     const resetButton = document.getElementById('reset-slider');
     
-    // Check if elements exist
-    console.log("Slider:", slider);
-    console.log("Slider Value:", sliderValue);
-    console.log("Reset Button:", resetButton);
+//     // Check if elements exist
+//     console.log("Slider:", slider);
+//     console.log("Slider Value:", sliderValue);
+//     console.log("Reset Button:", resetButton);
     
-    // Add event listener for slider input
-    slider.addEventListener('input', function() {
-        console.log("Slider value changed to:", this.value);
-        sliderValue.textContent = this.value;
-    });
+//     // Add event listener for slider input
+//     slider.addEventListener('input', function() {
+//         console.log("Slider value changed to:", this.value);
+//         sliderValue.textContent = this.value;
+//     });
     
-    // Add event listener for reset button
-    resetButton.addEventListener('click', function() {
-        console.log("Reset button clicked");
-        slider.value = 0;
-        sliderValue.textContent = "0";
-    });
-}
+//     // Add event listener for reset button
+//     resetButton.addEventListener('click', function() {
+//         console.log("Reset button clicked");
+//         slider.value = 0;
+//         sliderValue.textContent = "0";
+//     });
+// }
 
 // Call the function when the page loads
-document.addEventListener('DOMContentLoaded', initSlider);
+// document.addEventListener('DOMContentLoaded', initSlider);
 
 
-function initProgressBar() {
-    const progressBar = document.getElementById('progress-bar');
-    const progressBtn = document.getElementById('progress-btn');
+// function initProgressBar() {
+//     const progressBar = document.getElementById('progress-bar');
+//     const progressBtn = document.getElementById('progress-btn');
     
-    if (progressBar && progressBtn) {
-        // Make sure we only add one click listener
-        progressBtn.addEventListener('click', function() {
-            // Disable the button immediately to prevent multiple clicks
-            progressBtn.disabled = true;
-            progressBtn.textContent = 'Loading... 0%';
+//     if (progressBar && progressBtn) {
+//         // Make sure we only add one click listener
+//         progressBtn.addEventListener('click', function() {
+//             // Disable the button immediately to prevent multiple clicks
+//             progressBtn.disabled = true;
+//             progressBtn.textContent = 'Loading... 0%';
             
-            // Reset the progress bar width
-            progressBar.style.width = '0%';
+//             // Reset the progress bar width
+//             progressBar.style.width = '0%';
             
-            let width = 0;
-            // Use requestAnimationFrame instead of setInterval for smoother animation
-            function updateProgress() {
-                if (width >= 100) {
-                    progressBtn.textContent = 'Complete!';
-                } else {
-                    width += 1; // Smaller increments for smoother animation
-                    progressBar.style.width = width + '%';
-                    progressBtn.textContent = `Loading... ${width}%`;
-                    // Request the next frame
-                    setTimeout(updateProgress, 50); // 20 updates per second is smoother
-                }
-            }
+//             let width = 0;
+//             // Use requestAnimationFrame instead of setInterval for smoother animation
+//             function updateProgress() {
+//                 if (width >= 100) {
+//                     progressBtn.textContent = 'Complete!';
+//                 } else {
+//                     width += 1; // Smaller increments for smoother animation
+//                     progressBar.style.width = width + '%';
+//                     progressBtn.textContent = `Loading... ${width}%`;
+//                     // Request the next frame
+//                     setTimeout(updateProgress, 50); // 20 updates per second is smoother
+//                 }
+//             }
             
             // Start the animation
-            updateProgress();
-        });
-    }
-}
+            //updateProgress();
+//         });
+//     }
+// }
 
-function initTooltips() {
-    const tooltips = document.querySelectorAll('.tooltip');
+// function initTooltips() {
+//     const tooltips = document.querySelectorAll('.tooltip');
     
-    tooltips.forEach(tooltip => {
-        const text = tooltip.getAttribute('data-tooltip');
-        if (text) {
-            const tooltipText = document.createElement('span');
-            tooltipText.className = 'tooltip-text';
-            tooltipText.textContent = text;
-            tooltip.appendChild(tooltipText);
+//     tooltips.forEach(tooltip => {
+//         const text = tooltip.getAttribute('data-tooltip');
+//         if (text) {
+//             const tooltipText = document.createElement('span');
+//             tooltipText.className = 'tooltip-text';
+//             tooltipText.textContent = text;
+//             tooltip.appendChild(tooltipText);
             
-            // Add data attributes for automation testing
-            tooltipText.setAttribute('data-testid', 'tooltip-content');
-            tooltipText.setAttribute('aria-hidden', 'true');
+//             // Add data attributes for automation testing
+//             tooltipText.setAttribute('data-testid', 'tooltip-content');
+//             tooltipText.setAttribute('aria-hidden', 'true');
             
-            // Add hover event listeners
-            tooltip.addEventListener('mouseenter', function() {
-                tooltipText.style.visibility = 'visible';
-                tooltipText.style.opacity = '1';
+//             // Add hover event listeners
+//             tooltip.addEventListener('mouseenter', function() {
+//                 tooltipText.style.visibility = 'visible';
+//                 tooltipText.style.opacity = '1';
                 
-                // Update attribute for automation testing
-                tooltipText.setAttribute('data-visible', 'true');
-            });
+//                 // Update attribute for automation testing
+//                 tooltipText.setAttribute('data-visible', 'true');
+//             });
             
-            tooltip.addEventListener('mouseleave', function() {
-                tooltipText.style.visibility = 'hidden';
-                tooltipText.style.opacity = '0';
+//             tooltip.addEventListener('mouseleave', function() {
+//                 tooltipText.style.visibility = 'hidden';
+//                 tooltipText.style.opacity = '0';
                 
-                // Update attribute for automation testing
-                tooltipText.setAttribute('data-visible', 'false');
-            });
-        }
-    });
-}
+//                 // Update attribute for automation testing
+//                 tooltipText.setAttribute('data-visible', 'false');
+//             });
+//         }
+//     });
+// }
 
 // // Alerts Functions
 // function initAlerts() {
@@ -767,43 +849,46 @@ function initColorPicker() {
 // }
 
 // Modal Window functionality
+// Make sure this is in a <script> tag
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM loaded'); // Add this to check if script loads at all
+    initModalWindow();
+});
+
 function initModalWindow() {
     const modal = document.getElementById('modal');
     const openModalBtn = document.getElementById('open-modal');
     const closeModalBtn = document.querySelector('.close-modal');
     const confirmBtn = document.getElementById('modal-confirm');
     
+    //console.log('Modal elements:', modal, openModalBtn); 
+    //console.log("Button found", openModalBtn);// Debug check
+    
     // Open modal when button is clicked
-    if (openModalBtn && modal) {
-        openModalBtn.addEventListener('click', function() {
-            modal.style.display = 'flex';
-        });
-    }
+    openModalBtn.addEventListener('click', function() {
+        modal.style.display = 'flex';
+        console.log('Opening modal');
+    });
     
     // Close modal when close button is clicked
-    if (closeModalBtn && modal) {
-        closeModalBtn.addEventListener('click', function() {
-            modal.style.display = 'none';
-        });
-    }
+    closeModalBtn.addEventListener('click', function() {
+        modal.style.display = 'none';
+    });
     
     // Close modal when confirm button is clicked
-    if (confirmBtn && modal) {
-        confirmBtn.addEventListener('click', function() {
-            alert('Action confirmed!');
-            modal.style.display = 'none';
-        });
-    }
+    confirmBtn.addEventListener('click', function() {
+        alert('Action confirmed!');
+        modal.style.display = 'none';
+    });
     
     // Close modal when clicking outside the modal content
-    if (modal) {
-        window.addEventListener('click', function(e) {
-            if (e.target === modal) {
-                modal.style.display = 'none';
-            }
-        });
-    }
+    window.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            modal.style.display = 'none';
+        }
+    });
 }
+
 
 // ======= IFRAME SECTION =======
 // Combined iframe functionality
