@@ -5,10 +5,10 @@ document.addEventListener('DOMContentLoaded', function() {
     initNavigation();
     initForms();
     initTables();
-    initWidgets();
+    //initWidgets();
     initAlerts();
     initDynamicContent();
-    initAdvancedInteractions();
+    //initFuturisticComponents();
     initIframes();
     initModalWindow();
     setupIframeSection();
@@ -23,7 +23,7 @@ function initNavigation() {
     navLinks.forEach(link => {
         link.addEventListener('click', function(e) {
             if (!this.classList.contains('active') && !this.parentElement.classList.contains('dropdown')) {
-                document.querySelector('.nav-link.active').classList.remove('active');
+                document.querySelector('.nav-link.active')?.classList.remove('active');
                 this.classList.add('active');
             }
         });
@@ -57,26 +57,35 @@ function initForms() {
             });
             
             const successMessage = document.getElementById('successMessage');
-            successMessage.textContent = 'Registration successful!';
-            successMessage.style.color = 'green';
-            successMessage.style.padding = '10px';
-            successMessage.style.border = '1px solid green';
-            this.reset();
+            if (successMessage) {
+                successMessage.textContent = 'Registration successful!';
+                successMessage.style.color = 'green';
+                successMessage.style.padding = '10px';
+                successMessage.style.border = '1px solid green';
+                this.reset();
 
-            setTimeout(function() {
-            successMessage.textContent = '';
-            successMessage.style.color = '';
-            successMessage.style.padding = '';
-            successMessage.style.border = '';
-            }, 3000);
+                setTimeout(function() {
+                    successMessage.textContent = '';
+                    successMessage.style.color = '';
+                    successMessage.style.padding = '';
+                    successMessage.style.border = '';
+                }, 3000);
+            }
         });
     }
 }
 
+
+
+
+// Table Functions
 function initTables() {
     const tableSearch = document.getElementById('table-search');
     const tableFilter = document.getElementById('table-filter');
     const tableHeaders = document.querySelectorAll('th[data-sort]');
+    const userTable = document.getElementById('user-table');
+    
+    if (!userTable) return; // Exit if table doesn't exist
     
     // Pagination variables
     const rowsPerPage = 5;
@@ -98,8 +107,7 @@ function initTables() {
             
             filteredRows = Array.from(rows).filter(row => {
                 const text = row.textContent.toLowerCase();
-                const matches = text.includes(searchTerm);
-                return matches;
+                return text.includes(searchTerm);
             });
             
             // Reset to first page when searching
@@ -123,7 +131,7 @@ function initTables() {
         });
     }
     
-    if (tableHeaders) {
+    if (tableHeaders && tableHeaders.length > 0) {
         tableHeaders.forEach(header => {
             header.addEventListener('click', function() {
                 const sortField = this.getAttribute('data-sort');
@@ -139,8 +147,11 @@ function initTables() {
                 
                 // Sort rows
                 filteredRows.sort((a, b) => {
-                    const aValue = a.querySelector(`td:nth-child(${getColumnIndex(sortField)})`).textContent;
-                    const bValue = b.querySelector(`td:nth-child(${getColumnIndex(sortField)})`).textContent;
+                    const colIndex = getColumnIndex(sortField);
+                    if (colIndex < 1) return 0;
+                    
+                    const aValue = a.querySelector(`td:nth-child(${colIndex})`).textContent;
+                    const bValue = b.querySelector(`td:nth-child(${colIndex})`).textContent;
                     
                     if (sortField === 'id') {
                         return isAscending ? 
@@ -197,8 +208,8 @@ function initTables() {
             });
         });
     }
-    
-    // Pagination functions
+
+// Pagination functions
     function initPagination() {
         const rows = document.querySelectorAll('#user-table tbody tr');
         filteredRows = Array.from(rows);
@@ -262,555 +273,276 @@ function initTables() {
         attachRowEventListeners();
     }
 }
-// Widget Functions
-// function initWidgets() {
-//     initTabs();
-//     initDatePicker();
-//     initSlider();
-//     initProgressBar();
-//     initTooltips();
-// }
 
-// function initTabs() {
-//     const tabButtons = document.querySelectorAll('.tab-button');
-    
-//     tabButtons.forEach(button => {
-//         button.addEventListener('click', function() {
-//             const tabId = this.getAttribute('data-tab');
-            
-//             // Hide all tabs
-//             document.querySelectorAll('.tab-content').forEach(tab => {
-//                 tab.style.display = 'none';
-//             });
-            
-//             // Remove active class from all buttons
-//             document.querySelectorAll('.tab-button').forEach(btn => {
-//                 btn.classList.remove('active');
-//             });
-            
-//             // Show the selected tab
-//             document.getElementById(tabId).style.display = 'block';
-            
-//             // Add active class to the clicked button
-//             this.classList.add('active');
-//         });
-//     });
-// }
-
-// function initDatePicker() {
-//     const datepicker = document.getElementById('datepicker');
-//     const calendar = document.getElementById('datepicker-calendar');
-    
-//     if (datepicker && calendar) {
-//         datepicker.addEventListener('click', function() {
-//             calendar.style.display = calendar.style.display === 'block' ? 'none' : 'block';
-            
-//             // Generate calendar if it's empty
-//             if (calendar.children.length === 0) {
-//                 generateCalendar();
-//             }
-//         });
-        
-//         // Close calendar when clicking outside
-//         document.addEventListener('click', function(e) {
-//             if (!datepicker.contains(e.target) && !calendar.contains(e.target)) {
-//                 calendar.style.display = 'none';
-//             }
-//         });
-        
-//         function generateCalendar() {
-//             const date = new Date();
-//             const year = date.getFullYear();
-//             const month = date.getMonth();
-            
-//             const header = document.createElement('div');
-//             header.className = 'datepicker-header';
-            
-//             const prevBtn = document.createElement('button');
-//             prevBtn.textContent = '←';
-//             prevBtn.addEventListener('click', function() {
-//                 date.setMonth(date.getMonth() - 1);
-//                 updateCalendar();
-//             });
-            
-//             const nextBtn = document.createElement('button');
-//             nextBtn.textContent = '→';
-//             nextBtn.addEventListener('click', function() {
-//                 date.setMonth(date.getMonth() + 1);
-//                 updateCalendar();
-//             });
-            
-//             const monthYear = document.createElement('span');
-//             monthYear.textContent = `${date.toLocaleString('default', { month: 'long' })} ${date.getFullYear()}`;
-            
-//             header.appendChild(prevBtn);
-//             header.appendChild(monthYear);
-//             header.appendChild(nextBtn);
-            
-//             calendar.appendChild(header);
-            
-//             const daysGrid = document.createElement('div');
-//             daysGrid.className = 'datepicker-grid';
-            
-//             // Add day names
-//             const dayNames = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
-//             dayNames.forEach(day => {
-//                 const dayElement = document.createElement('div');
-//                 dayElement.textContent = day;
-//                 dayElement.className = 'datepicker-day-name';
-//                 daysGrid.appendChild(dayElement);
-//             });
-            
-//             calendar.appendChild(daysGrid);
-            
-//             function updateCalendar() {
-//                 monthYear.textContent = `${date.toLocaleString('default', { month: 'long' })} ${date.getFullYear()}`;
-                
-//                 // Clear previous days
-//                 while (daysGrid.children.length > 7) {
-//                     daysGrid.removeChild(daysGrid.lastChild);
-//                 }
-                
-//                 // Get first day of month and number of days
-//                 const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
-//                 const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
-//                 const daysInMonth = lastDay.getDate();
-                
-//                 // Add empty cells before first day
-//                 for (let i = 0; i < firstDay.getDay(); i++) {
-//                     const emptyDay = document.createElement('div');
-//                     emptyDay.className = 'datepicker-day empty';
-//                     daysGrid.appendChild(emptyDay);
-//                 }
-                
-//                 // Add days of month
-//                 for (let i = 1; i <= daysInMonth; i++) {
-//                     const dayElement = document.createElement('div');
-//                     dayElement.textContent = i;
-//                     dayElement.className = 'datepicker-day';
-                    
-//                     const currentDate = new Date();
-//                     if (i === currentDate.getDate() && date.getMonth() === currentDate.getMonth() && date.getFullYear() === currentDate.getFullYear()) {
-//                         dayElement.classList.add('current');
-//                     }
-                    
-//                     dayElement.addEventListener('click', function() {
-//                         const selectedDate = new Date(date.getFullYear(), date.getMonth(), i);
-//                         datepicker.value = selectedDate.toLocaleDateString();
-//                         calendar.style.display = 'none';
-//                     });
-                    
-//                     daysGrid.appendChild(dayElement);
-//                 }
-//             }
-            
-//             updateCalendar();
-//         }
-//     }
-// }
-
-// Your JavaScript file (e.g., slider.js)
-
-// function initSlider() {
-//     const slider = document.getElementById('slider');
-//     const sliderValue = document.getElementById('slider-value');
-//     const resetButton = document.getElementById('reset-slider');
-    
-//     // Check if elements exist
-//     console.log("Slider:", slider);
-//     console.log("Slider Value:", sliderValue);
-//     console.log("Reset Button:", resetButton);
-    
-//     // Add event listener for slider input
-//     slider.addEventListener('input', function() {
-//         console.log("Slider value changed to:", this.value);
-//         sliderValue.textContent = this.value;
-//     });
-    
-//     // Add event listener for reset button
-//     resetButton.addEventListener('click', function() {
-//         console.log("Reset button clicked");
-//         slider.value = 0;
-//         sliderValue.textContent = "0";
-//     });
-// }
-
-// Call the function when the page loads
-// document.addEventListener('DOMContentLoaded', initSlider);
-
-
-// function initProgressBar() {
-//     const progressBar = document.getElementById('progress-bar');
-//     const progressBtn = document.getElementById('progress-btn');
-    
-//     if (progressBar && progressBtn) {
-//         // Make sure we only add one click listener
-//         progressBtn.addEventListener('click', function() {
-//             // Disable the button immediately to prevent multiple clicks
-//             progressBtn.disabled = true;
-//             progressBtn.textContent = 'Loading... 0%';
-            
-//             // Reset the progress bar width
-//             progressBar.style.width = '0%';
-            
-//             let width = 0;
-//             // Use requestAnimationFrame instead of setInterval for smoother animation
-//             function updateProgress() {
-//                 if (width >= 100) {
-//                     progressBtn.textContent = 'Complete!';
-//                 } else {
-//                     width += 1; // Smaller increments for smoother animation
-//                     progressBar.style.width = width + '%';
-//                     progressBtn.textContent = `Loading... ${width}%`;
-//                     // Request the next frame
-//                     setTimeout(updateProgress, 50); // 20 updates per second is smoother
-//                 }
-//             }
-            
-            // Start the animation
-            //updateProgress();
-//         });
-//     }
-// }
-
-// function initTooltips() {
-//     const tooltips = document.querySelectorAll('.tooltip');
-    
-//     tooltips.forEach(tooltip => {
-//         const text = tooltip.getAttribute('data-tooltip');
-//         if (text) {
-//             const tooltipText = document.createElement('span');
-//             tooltipText.className = 'tooltip-text';
-//             tooltipText.textContent = text;
-//             tooltip.appendChild(tooltipText);
-            
-//             // Add data attributes for automation testing
-//             tooltipText.setAttribute('data-testid', 'tooltip-content');
-//             tooltipText.setAttribute('aria-hidden', 'true');
-            
-//             // Add hover event listeners
-//             tooltip.addEventListener('mouseenter', function() {
-//                 tooltipText.style.visibility = 'visible';
-//                 tooltipText.style.opacity = '1';
-                
-//                 // Update attribute for automation testing
-//                 tooltipText.setAttribute('data-visible', 'true');
-//             });
-            
-//             tooltip.addEventListener('mouseleave', function() {
-//                 tooltipText.style.visibility = 'hidden';
-//                 tooltipText.style.opacity = '0';
-                
-//                 // Update attribute for automation testing
-//                 tooltipText.setAttribute('data-visible', 'false');
-//             });
-//         }
-//     });
-// }
-
-// // Alerts Functions
-// function initAlerts() {
-//     const alertButtons = {
-//         'alert-btn': function() {
-//             alert('This is a simple alert!');
-//         },
-//         'confirm-btn': function() {
-//             const confirmed = confirm('Are you sure you want to proceed?');
-//             if (confirmed) {
-//                 alert('You confirmed the action!');
-//             } else {
-//                 alert('You canceled the action!');
-//             }
-//         },
-//         // 'prompt-btn': function() {
-//         //     const name = prompt('Please enter your name:', '');
-//         //     if (name !== null) {
-//         //         alert(`Hello, ${name}!`);
-//         //     }
-//         // }
-//     };
-    
-//     Object.keys(alertButtons).forEach(id => {
-//         const button = document.getElementById(id);
-//         if (button) {
-//             button.addEventListener('click', alertButtons[id]);
-//         }
-//     });
-// }
-
-// Dynamic Content Functions
-function initDynamicContent() {
-    const loadContentBtn = document.getElementById('load-content-btn');
-    const dynamicContent = document.getElementById('dynamic-content');
-    const loadingIndicator = document.getElementById('loading-indicator');
-    
-    if (loadContentBtn && dynamicContent) {
-        loadContentBtn.addEventListener('click', function() {
-            // Show loading indicator
-            if (loadingIndicator) {
-                loadingIndicator.style.display = 'block';
-            }
-            
-            // Simulate loading delay
-            setTimeout(function() {
-                // Generate random content
-                const content = generateRandomContent();
-                
-                // Update dynamic content area
-                dynamicContent.innerHTML = content;
-                
-                // Hide loading indicator
-                if (loadingIndicator) {
-                    loadingIndicator.style.display = 'none';
-                }
-                
-                // Initialize any new components in the dynamic content
-                initDynamicComponents();
-            }, 1500);
-        });
-    }
-    
-    function generateRandomContent() {
-        const contents = [
-            `<h3>New User Data</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>101</td>
-                        <td>Sarah Connor</td>
-                        <td>sarah.connor@example.com</td>
-                        <td><button class="btn btn-sm dynamic-btn">View</button></td>
-                    </tr>
-                    <tr>
-                        <td>102</td>
-                        <td>John Wick</td>
-                        <td>john.wick@example.com</td>
-                        <td><button class="btn btn-sm dynamic-btn">View</button></td>
-                    </tr>
-                </tbody>
-            </table>`,
-            
-            `<h3>Notification Center</h3>
-            <div class="notification-list">
-                <div class="notification">
-                    <h4>System Update</h4>
-                    <p>A new system update is available. Please refresh your browser.</p>
-                    <button class="btn btn-sm dynamic-btn">Refresh</button>
-                </div>
-                <div class="notification">
-                    <h4>New Message</h4>
-                    <p>You have 3 unread messages in your inbox.</p>
-      <button class="btn btn-sm dynamic-btn">View Messages</button>
-                </div>
-            </div>`,
-            
-            `<h3>Activity Graph</h3>
-            <div class="graph-container">
-                <canvas id="dynamic-graph" width="400" height="200"></canvas>
-                <div class="graph-legend">
-                    <div class="legend-item">
-                        <span class="legend-color" style="background-color: #3498db;"></span>
-                        <span>Visits</span>
-                    </div>
-                    <div class="legend-item">
-                        <span class="legend-color" style="background-color: #2ecc71;"></span>
-                        <span>Conversions</span>
-                    </div>
-                </div>
-                <button class="btn btn-sm dynamic-btn">Refresh Data</button>
-            </div>`
-        ];
-        
-        // Return a random content item
-        return contents[Math.floor(Math.random() * contents.length)];
-    }
-}
-
-// Initialize any additional components when the page loads or when dynamic content is added
-function initDynamicComponents() {
-    // Initialize dynamic buttons
-    const dynamicButtons = document.querySelectorAll('.dynamic-btn');
-    dynamicButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            alert('Dynamic button clicked: ' + this.textContent);
-        });
-    });
-    
-    // Initialize dynamic graph if it exists
-    const dynamicGraph = document.getElementById('dynamic-graph');
-    if (dynamicGraph) {
-        const ctx = dynamicGraph.getContext('2d');
-        
-        // Draw simple graph
-        ctx.beginPath();
-        ctx.moveTo(0, 150);
-        ctx.lineTo(50, 100);
-        ctx.lineTo(100, 120);
-        ctx.lineTo(150, 80);
-        ctx.lineTo(200, 90);
-        ctx.lineTo(250, 60);
-        ctx.lineTo(300, 70);
-        ctx.lineTo(350, 40);
-        ctx.lineTo(400, 50);
-        ctx.strokeStyle = '#3498db';
-        ctx.lineWidth = 3;
-        ctx.stroke();
-        
-        // Draw second line
-        ctx.beginPath();
-        ctx.moveTo(0, 180);
-        ctx.lineTo(50, 160);
-        ctx.lineTo(100, 170);
-        ctx.lineTo(150, 140);
-        ctx.lineTo(200, 150);
-        ctx.lineTo(250, 130);
-        ctx.lineTo(300, 140);
-        ctx.lineTo(350, 120);
-        ctx.lineTo(400, 130);
-        ctx.strokeStyle = '#2ecc71';
-        ctx.lineWidth = 3;
-        ctx.stroke();
-    }
-}
 
 // Advanced Interactions
-function initAdvancedInteractions() {
-    initDragAndDrop();
-    initAccordion();
-    initFileUpload();
-    initColorPicker();
-}
-
-function initDragAndDrop() {
-    const dragItems = document.querySelectorAll('.drag-item');
-    const dropZone = document.getElementById('drop-zone');
-    const draggables = document.querySelectorAll('.draggable');
-    const dropZones = document.querySelectorAll('.drop-zone');
-    
-    // Set up event listeners for drag items
-    dragItems.forEach(item => {
-        item.addEventListener('dragstart', function(e) {
-            e.dataTransfer.setData('text/plain', this.id);
-            this.classList.add('dragging');
-        });
-        
-        item.addEventListener('dragend', function() {
-            this.classList.remove('dragging');
-        });
-    });
-    
-    // Set up event listeners for drop zone
-    if (dropZone) {
-        // Allow drop by preventing default
-        dropZone.addEventListener('dragover', function(e) {
-            e.preventDefault();
-            this.classList.add('drag-over');
-        });
-        
-        // Remove visual indicator when leaving drop zone
-        dropZone.addEventListener('dragleave', function() {
-            this.classList.remove('drag-over');
-        });
-        
-        // Handle the drop event
-        dropZone.addEventListener('drop', function(e) {
-            e.preventDefault();
-            this.classList.remove('drag-over');
+document.addEventListener('DOMContentLoaded', function() {
+            const dragItems = document.querySelectorAll('.futuristic-drag-item');
+            const dropZone = document.getElementById('futuristic-drop-zone');
+            const dropZoneEmpty = document.querySelector('.futuristic-drop-zone-empty');
             
-            // Get the dragged item id and element
-            const id = e.dataTransfer.getData('text/plain');
-            const draggedItem = document.getElementById(id);
+            let draggedItem = null;
             
-            // Move the item to the drop zone if it exists
-            if (draggedItem) {
-                this.appendChild(draggedItem);
+            // Add event listeners to draggable items
+            dragItems.forEach(item => {
+                item.addEventListener('dragstart', function() {
+                    draggedItem = this;
+                    setTimeout(() => {
+                        this.classList.add('dragging');
+                    }, 0);
+                });
                 
-                // Clear the placeholder text if this is the first item
-                if (this.textContent.trim() === 'Drop items here' && this.childElementCount === 1) {
-                    this.textContent = '';
-                    this.appendChild(draggedItem);
+                item.addEventListener('dragend', function() {
+                    this.classList.remove('dragging');
+                });
+            });
+            
+            // Add event listeners to drop zone
+            dropZone.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                this.classList.add('drag-over');
+            });
+            
+            dropZone.addEventListener('dragleave', function() {
+                this.classList.remove('drag-over');
+            });
+            
+            dropZone.addEventListener('drop', function(e) {
+                e.preventDefault();
+                this.classList.remove('drag-over');
+                
+                if (draggedItem) {
+                    const droppedItemId = draggedItem.id;
+                    const itemExists = document.querySelector(`#${droppedItemId}-dropped`);
+                    
+                    if (!itemExists) {
+                        // Hide empty state if this is the first item
+                        if (dropZone.querySelectorAll('.futuristic-drag-item').length === 0) {
+                            dropZoneEmpty.style.display = 'none';
+                        }
+                        
+                        // Clone the item and add to drop zone
+                        const clone = draggedItem.cloneNode(true);
+                        clone.id = `${droppedItemId}-dropped`;
+                        clone.classList.add('drop-animation');
+                        clone.setAttribute('draggable', 'false');
+                        
+                        dropZone.appendChild(clone);
+                    }
                 }
+            });
+            
+            // Modal Functionality
+            const modal = document.getElementById('futuristic-modal');
+            const openModalBtn = document.getElementById('futuristic-open-modal');
+            const closeModalBtn = document.querySelector('.futuristic-close-modal');
+            const confirmBtn = document.getElementById('futuristic-modal-confirm');
+            
+            openModalBtn.addEventListener('click', function() {
+                modal.style.display = 'flex';
+            });
+            
+            closeModalBtn.addEventListener('click', function() {
+                modal.style.display = 'none';
+            });
+            
+            confirmBtn.addEventListener('click', function() {
+                modal.style.display = 'none';
+                // You can add confirmation handling here
+            });
+            
+            window.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+            
+            // Accordion Functionality
+            const accordionHeaders = document.querySelectorAll('.custom-accordion-header');
+            
+            accordionHeaders.forEach(header => {
+                header.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                    const content = this.nextElementSibling;
+                    
+                    if (content.classList.contains('active')) {
+                        content.classList.remove('active');
+                    } else {
+                        content.classList.add('active');
+                    }
+                });
+            });
+        });
+// Dynamic Content Functions
+function setupDynamicContentSection() {
+    const elements = {
+        loadDataBtn: document.getElementById('load-data-btn'),
+        delayedBtn: document.getElementById('delayed-btn'),
+        dynamicContent: document.getElementById('dynamic-content'),
+        delayedContainer: document.getElementById('delayed-container')
+    };
+    
+    if (elements.loadDataBtn && elements.dynamicContent) {
+        elements.loadDataBtn.addEventListener('click', () => loadDynamicData(elements.dynamicContent));
+    }
+    
+    if (elements.delayedBtn && elements.delayedContainer) {
+        elements.delayedBtn.addEventListener('click', () => showDelayedElement(elements));
+    }
+}
+
+function loadDynamicData(container) {
+    container.innerHTML = '<p>Loading data...</p>';
+    
+    setTimeout(() => {
+        const data = [
+            { name: 'Alice', age: 25, city: 'New York' },
+            { name: 'Bob', age: 30, city: 'Chicago' },
+            { name: 'Charlie', age: 22, city: 'Los Angeles' }
+        ];
+        container.innerHTML = generateTableHTML(data);
+    }, 2000);
+}
+
+function generateTableHTML(data) {
+    return `
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Age</th>
+                    <th>City</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${data.map(person => `
+                    <tr>
+                        <td>${person.name}</td>
+                        <td>${person.age}</td>
+                        <td>${person.city}</td>
+                    </tr>
+                `).join('')}
+            </tbody>
+        </table>
+    `;
+}
+
+function showDelayedElement(elements) {
+    elements.delayedBtn.disabled = true;
+    elements.delayedBtn.textContent = 'Loading...';
+    
+    setTimeout(() => {
+        const delayedElement = document.createElement('div');
+        delayedElement.className = 'delayed-message';
+        delayedElement.style.cssText = 'background-color: #ffeb3b; padding: 15px; margin-top: 10px; border-radius: 5px;';
+        delayedElement.innerHTML = `
+            <h4>Surprise Element!</h4>
+            <p>This element appeared after a 3-second delay.</p>
+            <button id="remove-delayed">Remove Me</button>
+        `;
+        
+        elements.delayedContainer.appendChild(delayedElement);
+        elements.delayedBtn.disabled = false;
+        elements.delayedBtn.textContent = 'Show Delayed Element';
+        
+        document.getElementById('remove-delayed')?.addEventListener('click', () => {
+            elements.delayedContainer.removeChild(delayedElement);
+        });
+    }, 3000);
+}
+
+// IFrame Section
+function setupIframeSection() {
+    const iframeElements = {
+        toggle: document.getElementById('iframe-toggle'),
+        content: document.getElementById('iframe-content'),
+        sendBtn: document.getElementById('iframe-btn'),
+        frame: document.getElementById('practice-iframe')
+    };
+    
+    if (iframeElements.toggle && iframeElements.content) {
+        iframeElements.toggle.addEventListener('click', () => {
+            const isVisible = iframeElements.content.style.display !== 'none';
+            iframeElements.content.style.display = isVisible ? 'none' : 'block';
+            iframeElements.toggle.textContent = isVisible ? 'Show iFrame' : 'Hide iFrame';
+        });
+    }
+    
+    if (iframeElements.sendBtn && iframeElements.frame) {
+        iframeElements.sendBtn.addEventListener('click', () => {
+            try {
+                iframeElements.frame.contentWindow.postMessage({
+                    message: 'Hello from the parent page!'
+                }, '*');
+                alert('Message sent to iframe!');
+            } catch (error) {
+                alert('Could not send message: ' + error.message);
             }
         });
     }
     
-    // Set up event listeners for draggable elements
-    draggables.forEach(draggable => {
-        draggable.addEventListener('dragstart', function(e) {
-            e.dataTransfer.setData('text/plain', this.id);
-            this.classList.add('dragging');
-        });
-        
-        draggable.addEventListener('dragend', function() {
-            this.classList.remove('dragging');
-        });
-    });
-    
-    // Set up event listeners for drop zones
-    dropZones.forEach(zone => {
-        zone.addEventListener('dragover', function(e) {
-            e.preventDefault();
-            this.classList.add('drag-over');
-        });
-        
-        zone.addEventListener('dragleave', function() {
-            this.classList.remove('drag-over');
-        });
-        
-        zone.addEventListener('drop', function(e) {
-            e.preventDefault();
-            this.classList.remove('drag-over');
-            const id = e.dataTransfer.getData('text/plain');
-            const draggable = document.getElementById(id);
-            
-            // Append the draggable element to the drop zone
-            if (draggable) {
-                this.appendChild(draggable);
-            }
-        });
+    window.addEventListener('message', (event) => {
+        if (event.data?.message) {
+            alert('Message from iframe: ' + event.data.message);
+        }
     });
 }
 
-function initAccordion() {
-    const accordionHeaders = document.querySelectorAll('.accordion-header');
+// Alerts Section
+function setupAlertsSection() {
+    const alertButtons = {
+        'alert-btn': () => alert('This is a simple alert!'),
+        'confirm-btn': () => {
+            const confirmed = confirm('Are you sure you want to proceed?');
+            alert(confirmed ? 'You confirmed the action!' : 'You canceled the action!');
+        },
+        'prompt-btn': () => {
+            const name = prompt('Please enter your name:', '');
+            if (name !== null) alert(`Hello, ${name}!`);
+        }
+    };
     
-    accordionHeaders.forEach(header => {
-        header.addEventListener('click', function() {
-            this.classList.toggle('active');
-            
-            const content = this.nextElementSibling;
-            if (content.style.maxHeight) {
-                content.style.maxHeight = null;
-            } else {
-                content.style.maxHeight = content.scrollHeight + 'px';
-            }
-        });
+    Object.entries(alertButtons).forEach(([id, handler]) => {
+        document.getElementById(id)?.addEventListener('click', handler);
     });
 }
 
-function initFileUpload() {
-    const fileInput = document.getElementById('profile-pic');
-    const fileLabel = document.querySelector('label[for="profile-pic"]');
+// ... previous code ...
+
+// Helper Functions for Drag and Drop
+function initDragAndDrop() {
+    const dragElements = {
+        items: document.querySelectorAll('.draggable'),
+        dropZones: document.querySelectorAll('.drop-zone')
+    };
     
-    if (fileInput && fileLabel) {
-        fileInput.addEventListener('change', function() {
-            if (this.files.length > 0) {
-                fileLabel.textContent = 'File selected: ' + this.files[0].name;
-            } else {
-                fileLabel.textContent = 'Profile Picture:';
-            }
-        });
-    }
+    dragElements.items.forEach(item => {
+        item.addEventListener('dragstart', handleDragStart);
+        item.addEventListener('dragend', handleDragEnd);
+    });
+    
+    dragElements.dropZones.forEach(zone => {
+        zone.addEventListener('dragover', handleDragOver);
+        zone.addEventListener('dragleave', handleDragLeave);
+        zone.addEventListener('drop', handleDrop);
+    });
 }
 
+// File Upload Functions
+// function initFileUpload() {
+//     const fileInput = document.getElementById('profile-pic');
+//     const fileLabel = document.querySelector('label[for="profile-pic"]');
+    
+//     if (fileInput && fileLabel) {
+//         fileInput.addEventListener('change', function() {
+//             fileLabel.textContent = this.files.length > 0 
+//                 ? 'File selected: ' + this.files[0].name 
+//                 : 'Profile Picture:';
+//         });
+//     }
+// }
+
+// Color Picker Functions
 function initColorPicker() {
     const colorPicker = document.getElementById('color-picker');
     const colorDisplay = document.getElementById('color-display');
@@ -823,284 +555,215 @@ function initColorPicker() {
     }
 }
 
-// // Iframe Functions
-// function initIframes() {
-//     const iframeToggle = document.getElementById('iframe-toggle');
-//     const iframeContent = document.getElementById('iframe-content');
-    
-//     if (iframeToggle && iframeContent) {
-//         iframeToggle.addEventListener('click', function() {
-//             if (iframeContent.style.display === 'none') {
-//                 iframeContent.style.display = 'block';
-//                 this.textContent = 'Hide iFrame';
-//             } else {
-//                 iframeContent.style.display = 'none';
-//                 this.textContent = 'Show iFrame';
-//             }
-//         });
-//     }
-    
-//     // Communication between iframe and parent
-//     window.addEventListener('message', function(event) {
-//         if (event.data.type === 'iframeMessage') {
-//             alert('Message from iframe: ' + event.data.message);
+// Accordion Functions
+// function initCustomAccordion() {
+//             document.querySelectorAll('#custom-accordion .custom-accordion-header').forEach(header => {
+//                 header.addEventListener('click', function() {
+//                     this.classList.toggle('active');
+//                     const content = this.nextElementSibling;
+//                     if (content.style.maxHeight) {
+//                         content.style.maxHeight = null;
+//                         content.style.padding = "0 20px";
+//                     } else {
+//                         content.style.maxHeight = content.scrollHeight + 'px';
+//                         content.style.padding = "15px 20px";
+//                     }
+//                 });
+//             });
 //         }
-//     });
-// }
+//         document.addEventListener("DOMContentLoaded", initCustomAccordion);
 
-// Modal Window functionality
-// Make sure this is in a <script> tag
-
-
-document.addEventListener("DOMContentLoaded", function () {
-    const modal = document.getElementById("modal");
-    const openModalBtn = document.getElementById("open-modal");
-    const closeModalBtn = document.querySelector(".close-modal");
-    const confirmBtn = document.getElementById('modal-confirm');
-
-    // Ensure modal is hidden on load
-    modal.style.display = "none";
-
-    // Open modal when button is clicked
-    openModalBtn.addEventListener("click", function () {
-        modal.style.display = "flex";
-    });
-
-    // Close modal when the close button is clicked
-    closeModalBtn.addEventListener("click", function () {
-        modal.style.display = "none";
-    });
-
-    // Close modal when confirm button is clicked
-    confirmBtn.addEventListener('click', function() {
-        alert('Action confirmed!');
-        modal.style.display = 'none';
-    });
-
-    // Close modal when clicking outside the modal content
-    window.addEventListener("click", function (e) {
-        if (e.target === modal) {
-            modal.style.display = "none";
-        }
-    });
+// Event Listener for Messages from iFrame
+window.addEventListener('message', function(event) {
+    if (event.data?.type === 'iframeMessage') {
+        alert('Message from iframe: ' + event.data.message);
+    }
 });
 
-
-// ======= IFRAME SECTION =======
-// Combined iframe functionality
-// This is our main function that sets up everything
-function setupIframes() {
-    // First, we find all the buttons and screens we need
-    const hideShowButton = document.getElementById('iframe-toggle');
-    const iframeBox = document.getElementById('iframe-content');
-    const sendMessageButton = document.getElementById('iframe-btn');
-    const ourIframe = document.getElementById('practice-iframe');
+// Modal Window Functionality
+function initModalWindow() {
+    const modalElements = {
+        modal: document.getElementById("modal"),
+        openBtn: document.getElementById("open-modal"),
+        closeBtn: document.querySelector(".close-modal"),
+        confirmBtn: document.getElementById('modal-confirm')
+    };
     
-    // This makes the hide/show button work
-    if (hideShowButton && iframeBox) {
-        hideShowButton.addEventListener('click', function() {
-            // If the iframe is hidden, show it
-            if (iframeBox.style.display === 'none') {
-                iframeBox.style.display = 'block';
-                this.textContent = 'Hide iFrame';
-            } 
-            // If the iframe is showing, hide it
-            else {
-                iframeBox.style.display = 'none';
-                this.textContent = 'Show iFrame';
-            }
+    if (!modalElements.modal) return;
+    
+    modalElements.modal.style.display = "none";
+    
+    const toggleModal = (show) => {
+        modalElements.modal.style.display = show ? "flex" : "none";
+    };
+    
+    modalElements.openBtn?.addEventListener("click", () => toggleModal(true));
+    modalElements.closeBtn?.addEventListener("click", () => toggleModal(false));
+    modalElements.confirmBtn?.addEventListener('click', () => {
+        alert('Action confirmed!');
+        toggleModal(false);
+    });
+    
+    window.addEventListener("click", (e) => {
+        if (e.target === modalElements.modal) toggleModal(false);
+    });
+}
+
+// IFrame Section
+function setupIframes() {
+    const iframeElements = {
+        toggle: document.getElementById('iframe-toggle'),
+        content: document.getElementById('iframe-content'),
+        sendBtn: document.getElementById('iframe-btn'),
+        frame: document.getElementById('practice-iframe')
+    };
+    
+    if (iframeElements.toggle && iframeElements.content) {
+        iframeElements.toggle.addEventListener('click', () => {
+            const isVisible = iframeElements.content.style.display !== 'none';
+            iframeElements.content.style.display = isVisible ? 'none' : 'block';
+            iframeElements.toggle.textContent = isVisible ? 'Show iFrame' : 'Hide iFrame';
         });
     }
     
-    // This makes the send message button work
-    if (sendMessageButton && ourIframe) {
-        sendMessageButton.addEventListener('click', function() {
+    if (iframeElements.sendBtn && iframeElements.frame) {
+        iframeElements.sendBtn.addEventListener('click', () => {
             try {
-                // This sends a friendly hello message to the iframe
-                ourIframe.contentWindow.postMessage({
+                iframeElements.frame.contentWindow.postMessage({
                     message: 'Hello from the parent page!'
                 }, '*');
-                // This tells us the message was sent
                 alert('Message sent to iframe!');
             } catch (error) {
-                // This tells us if something went wrong
                 alert('Could not send message: ' + error.message);
             }
         });
     }
     
-    // This listens for any messages coming from the iframe
-    window.addEventListener('message', function(event) {
-        if (event.data && event.data.message) {
-            // When the iframe sends a message, show it in a popup
+    window.addEventListener('message', (event) => {
+        if (event.data?.message) {
             alert('Message from iframe: ' + event.data.message);
         }
     });
 }
 
-// Run our function when the page is fully loaded
-document.addEventListener('DOMContentLoaded', setupIframes);
-
-// ======= ALERTS SECTION =======
+// Alerts Section
 function setupAlertsSection() {
-    // Find all our buttons
-    const alertBtn = document.getElementById('alert-btn');
-    const confirmBtn = document.getElementById('confirm-btn');
-    const promptBtn = document.getElementById('prompt-btn');
+    const elements = {
+        alertBtn: document.getElementById('alert-btn'),
+        confirmBtn: document.getElementById('confirm-btn'),
+        promptBtn: document.getElementById('prompt-btn'),
+        resultDisplay: document.getElementById('alert-result')
+    };
     
-    // Find where we'll show our results
-    const alertResult = document.getElementById('alert-result');
+    const updateResult = (message) => {
+        if (elements.resultDisplay) {
+            elements.resultDisplay.textContent = message;
+        }
+    };
     
-    // Setup the regular alert button
-    if (alertBtn) {
-        alertBtn.addEventListener('click', function() {
-            // Show a simple alert popup
+    const alertHandlers = {
+        'alert-btn': () => {
             alert('This is a simple alert message!');
-            
-            // Update the result text
-            if (alertResult) {
-                alertResult.textContent = 'Alert was shown';
-            }
-        });
-    }
-    
-    // Setup the confirm button
-    if (confirmBtn) {
-        confirmBtn.addEventListener('click', function() {
-            // Show a confirm dialog (with OK and Cancel buttons)
+            updateResult('Alert was shown');
+        },
+        'confirm-btn': () => {
             const userChoice = confirm('Do you want to proceed?');
-            
-            // Update the result based on what the user clicked
-            if (alertResult) {
-                if (userChoice) {
-                    alertResult.textContent = 'User clicked OK';
-                } else {
-                    alertResult.textContent = 'User clicked Cancel';
-                }
-            }
-        });
-    }
-    
-    // Setup the prompt button
-    if (promptBtn) {
-        promptBtn.addEventListener('click', function() {
-            // Show a prompt dialog where the user can type something
+            updateResult(userChoice ? 'User clicked OK' : 'User clicked Cancel');
+        },
+        'prompt-btn': () => {
             const userInput = prompt('Please enter your name:', '');
-            
-            // Update the result based on what the user entered
-            if (alertResult) {
-                if (userInput === null) {
-                    alertResult.textContent = 'User canceled the prompt';
-                } else if (userInput === '') {
-                    alertResult.textContent = 'User didn\'t enter anything';
-                } else {
-                    alertResult.textContent = 'User entered: ' + userInput;
-                }
+            if (userInput === null) {
+                updateResult('User canceled the prompt');
+            } else if (userInput === '') {
+                updateResult('User didn\'t enter anything');
+            } else {
+                updateResult('User entered: ' + userInput);
             }
-        });
-    }
+        }
+    };
+    
+    Object.entries(alertHandlers).forEach(([id, handler]) => {
+        document.getElementById(id)?.addEventListener('click', handler);
+    });
 }
 
-// Make sure to call the function when the page loads
-document.addEventListener('DOMContentLoaded', function() {
-    setupAlertsSection();
-});
-
-// ======= DYNAMIC CONTENT SECTION =======
+// Dynamic Content Section
 function setupDynamicContentSection() {
-    // Find our buttons
-    const loadDataBtn = document.getElementById('load-data-btn');
-    const delayedBtn = document.getElementById('delayed-btn');
+    const elements = {
+        loadDataBtn: document.getElementById('load-data-btn'),
+        delayedBtn: document.getElementById('delayed-btn'),
+        dynamicContent: document.getElementById('dynamic-content'),
+        delayedContainer: document.getElementById('delayed-container')
+    };
     
-    // Find where we'll put our content
-    const dynamicContent = document.getElementById('dynamic-content');
-    const delayedContainer = document.getElementById('delayed-container');
-    
-    // Setup the load data button
-    if (loadDataBtn && dynamicContent) {
-        loadDataBtn.addEventListener('click', function() {
-            // Show loading text while we wait
-            dynamicContent.innerHTML = '<p>Loading data...</p>';
-            
-            // Pretend we're getting data from a server (this takes 2 seconds)
-            setTimeout(function() {
-                // Create some fake data (in a real app, this would come from a server)
-                const data = [
-                    { name: 'Alice', age: 25, city: 'New York' },
-                    { name: 'Bob', age: 30, city: 'Chicago' },
-                    { name: 'Charlie', age: 22, city: 'Los Angeles' }
-                ];
-                
-                // Make a nice HTML table from our data
-                let tableHTML = `
-                    <table border="1">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Age</th>
-                                <th>City</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                `;
-                
-                // Add a row for each person in our data
-                data.forEach(function(person) {
-                    tableHTML += `
-                        <tr>
-                            <td>${person.name}</td>
-                            <td>${person.age}</td>
-                            <td>${person.city}</td>
-                        </tr>
-                    `;
-                });
-                
-                // Finish our table
-                tableHTML += `
-                        </tbody>
-                    </table>
-                `;
-                
-                // Put the table in our page
-                dynamicContent.innerHTML = tableHTML;
-            }, 2000); // Wait 2 seconds (2000 milliseconds)
-        });
+    if (elements.loadDataBtn && elements.dynamicContent) {
+        elements.loadDataBtn.addEventListener('click', () => loadDynamicData(elements.dynamicContent));
     }
     
-    // Setup the delayed button
-    if (delayedBtn && delayedContainer) {
-        delayedBtn.addEventListener('click', function() {
-            // Disable the button so it can't be clicked again
-            delayedBtn.disabled = true;
-            delayedBtn.textContent = 'Loading...';
-            
-            // Wait 3 seconds before showing the element
-            setTimeout(function() {
-                // Create a colorful message that wasn't there before
-                const delayedElement = document.createElement('div');
-                delayedElement.className = 'delayed-message';
-                delayedElement.style.backgroundColor = '#ffeb3b';
-                delayedElement.style.padding = '15px';
-                delayedElement.style.marginTop = '10px';
-                delayedElement.style.borderRadius = '5px';
-                delayedElement.innerHTML = `
-                    <h4>Surprise Element!</h4>
-                    <p>This element appeared after a 3-second delay.</p>
-                    <button id="remove-delayed">Remove Me</button>
-                `;
-                
-                // Add it to the page
-                delayedContainer.appendChild(delayedElement);
-                
-                // Reset the button
-                delayedBtn.disabled = false;
-                delayedBtn.textContent = 'Show Delayed Element';
-                
-                // Make the "Remove Me" button work
-                document.getElementById('remove-delayed').addEventListener('click', function() {
-                    delayedContainer.removeChild(delayedElement);
-                });
-            }, 3000); // Wait 3 seconds (3000 milliseconds)
-        });
+    if (elements.delayedBtn && elements.delayedContainer) {
+        elements.delayedBtn.addEventListener('click', () => showDelayedElement(elements));
     }
 }
+
+function loadDynamicData(container) {
+    container.innerHTML = '<p>Loading data...</p>';
+    
+    setTimeout(() => {
+        const data = [
+            { name: 'Alice', age: 25, city: 'New York' },
+            { name: 'Bob', age: 30, city: 'Chicago' },
+            { name: 'Charlie', age: 22, city: 'Los Angeles' }
+        ];
+        container.innerHTML = generateTableHTML(data);
+    }, 2000);
+}
+
+function generateTableHTML(data) {
+    return `
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Age</th>
+                    <th>City</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${data.map(person => `
+                    <tr>
+                        <td>${person.name}</td>
+                        <td>${person.age}</td>
+                        <td>${person.city}</td>
+                    </tr>
+                `).join('')}
+            </tbody>
+        </table>
+    `;
+}
+
+function showDelayedElement(elements) {
+    elements.delayedBtn.disabled = true;
+    elements.delayedBtn.textContent = 'Loading...';
+    
+    setTimeout(() => {
+        const delayedElement = document.createElement('div');
+        delayedElement.className = 'delayed-message';
+        delayedElement.innerHTML = `
+            <h4>Delayed Content</h4>
+            <p>This content appeared after a delay.</p>
+            <button onclick="this.parentElement.remove()">Close</button>
+        `;
+        
+        elements.delayedContainer.appendChild(delayedElement);
+        elements.delayedBtn.disabled = false;
+        elements.delayedBtn.textContent = 'Show Delayed Element';
+    }, 3000);
+}
+
+// Initialize all functionality when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    initModalWindow();
+    setupIframes();
+    setupAlertsSection();
+    setupDynamicContentSection();
+});

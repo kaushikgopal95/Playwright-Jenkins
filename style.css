@@ -1,11 +1,18 @@
-/* CSS for Automation Practice Website */
+/* Minimalist Dark Theme CSS */
 :root {
-    --primary-color: #3498db;
-    --secondary-color: #2ecc71;
-    --accent-color: #e74c3c;
-    --text-color: #333;
-    --light-bg: #f9f9f9;
-    --dark-bg: #2c3e50;
+    --primary-color:  #353333 ;    /* Dark background */
+    --secondary-color:  #353333 ;  /* Slightly lighter dark for secondary elements */
+    --accent-color: #5c8a8a;     /* Medium gray for accents and buttons 1c7a7a */
+    --text-color: #f5f5f5;       /* Light text color */
+    --light-text: #ffffff;       /* White for emphasis */
+    --light-bg: #282828;         /* Light background for elements */
+    --dark-bg: #0a0a0a;          /* Darker background for contrast */
+    --card-bg: #1a1a1a;          /* Card background */
+    --border-color: #333333;     /* Border color */
+    --success-color: #4d8c57;    /* Dark green for success states */
+    --hover-color: #3a3a3a;      /* Hover state color */
+    --gradient-primary: linear-gradient(135deg, #282828, #1a1a1a);
+    --gradient-accent: linear-gradient(135deg, #4d4d4d, #333333);
 }
 
 body {
@@ -14,7 +21,7 @@ body {
     margin: 0;
     padding: 0;
     color: var(--text-color);
-    background-color: var(--light-bg);
+    background-color: var(--primary-color);
 }
 
 .container {
@@ -26,9 +33,9 @@ body {
 
 header {
     background-color: var(--dark-bg);
-    color: white;
+    color: var(--text-color);
     padding: 1rem 0;
-    position: relative;
+    border-bottom: 1px solid var(--border-color);
 }
 
 header .container {
@@ -40,6 +47,7 @@ header .container {
 .logo {
     font-size: 1.5rem;
     font-weight: bold;
+    color: var(--light-text);
 }
 
 nav ul {
@@ -54,20 +62,22 @@ nav ul li {
 }
 
 nav ul li a {
-    color: white;
+    color: var(--text-color);
     text-decoration: none;
-    transition: color 0.3s;
+    padding: 10px 15px;
+    transition: background 0.3s;
 }
 
 nav ul li a:hover {
-    color: var(--secondary-color);
+    background-color: var(--hover-color);
 }
 
 .hero {
-    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://via.placeholder.com/1200x400');
+    background-color: var(--secondary-color);
+    background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('C:/Users/User/Desktop/Personal/a_web/hero.jpg');
     background-size: cover;
     background-position: center;
-    color: white;
+    color: var(--text-color);
     text-align: center;
     padding: 4rem 2rem;
 }
@@ -75,6 +85,7 @@ nav ul li a:hover {
 .hero h1 {
     font-size: 2.5rem;
     margin-bottom: 1rem;
+    color: var(--light-text);
 }
 
 .hero p {
@@ -85,32 +96,18 @@ nav ul li a:hover {
 
 .btn {
     display: inline-block;
-    background-color: var(--primary-color);
-    color: white;
-    padding: 10px 20px;
-    border-radius: 5px;
+    background-color: var(--accent-color);
+    color: var(--light-text);
+    padding: 10px 25px;
+    border-radius: 4px;
     text-decoration: none;
-    transition: background-color 0.3s;
+    transition: all 0.3s;
+    border: none;
 }
 
 .btn:hover {
-    background-color: #2980b9;
-}
-
-.btn-accent {
-    background-color: var(--accent-color);
-}
-
-.btn-accent:hover {
-    background-color: #c0392b;
-}
-
-.btn-success {
-    background-color: var(--secondary-color);
-}
-
-.btn-success:hover {
-    background-color: #27ae60;
+    background-color: var(--hover-color);
+    transform: translateY(-2px);
 }
 
 .section {
@@ -124,18 +121,7 @@ nav ul li a:hover {
 
 .section-title h2 {
     font-size: 2rem;
-    position: relative;
-    display: inline-block;
-}
-
-.section-title h2::after {
-    content: '';
-    position: absolute;
-    width: 50%;
-    height: 3px;
-    background-color: var(--primary-color);
-    bottom: -10px;
-    left: 25%;
+    color: var(--light-text);
 }
 
 .features {
@@ -145,15 +131,17 @@ nav ul li a:hover {
 }
 
 .feature-card {
-    background-color: white;
-    border-radius: 8px;
+    background-color: var(--card-bg);
+    border-radius: 6px;
     overflow: hidden;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s;
+    border: 1px solid var(--border-color);
 }
 
 .feature-card:hover {
     transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
 .feature-card img {
@@ -168,129 +156,140 @@ nav ul li a:hover {
 
 .feature-card h3 {
     margin-top: 0;
-    color: var(--primary-color);
+    color: var(--light-text);
 }
 
 .tables-section {
-    background-color: white;
+    background-color: var(--card-bg);
     padding: 2rem;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-/* Container styling */
-.tables-section {
-  padding: 20px;
-  border-radius: 8px;
-  background-color: #fff;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--border-color);
 }
 
 /* Table controls spacing */
 .table-controls {
-  display: flex;
-  gap: 15px;
-  margin-bottom: 20px;
-  align-items: center;
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+    align-items: center;
 }
 
 /* Form controls consistent styling */
 .form-control {
-  height: 38px;
-  padding: 8px 12px;
-  border: 1px solid #ced4da;
-  border-radius: 4px;
-  box-sizing: border-box;
-  width: 100%;
+    height: 38px;
+    padding: 8px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background-color: var(--secondary-color);
+    color: var(--text-color);
+    box-sizing: border-box;
+    width: 100%;
+    transition: all 0.3s;
+}
+
+.form-control:focus {
+    border-color: var(--accent-color);
+    outline: none;
 }
 
 /* Table styling */
 #user-table {
-  width: 100%;
-  border-collapse: collapse;
-  table-layout: fixed;
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
 }
 
 /* Header cell styling */
 #user-table th {
-  background-color: #2c87c5;
-  color: white;
-  padding: 12px 15px;
-  text-align: left;
-  border-bottom: 1px solid #ddd;
-  position: relative;
-}
-
-/* Sort icons styling */
-#user-table th i {
-  margin-left: 5px;
-  font-size: 0.8em;
+    background-color: var(--secondary-color);
+    color: var(--light-text);
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
 }
 
 /* Cell styling */
 #user-table td {
-  padding: 12px 15px;
-  border-bottom: 1px solid #ddd;
-  overflow: hidden;
-  text-overflow: ellipsis;
+    padding: 12px 15px;
+    border-bottom: 1px solid var(--border-color);
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 /* Action buttons styling */
 #user-table .actions {
-  display: flex;
-  gap: 8px;
+    display: flex;
+    gap: 8px;
 }
 
 /* Edit button styling */
 .edit-btn {
-  background-color: #2c87c5;
-  color: white;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 4px;
-  cursor: pointer;
+    background-color: var(--accent-color);
+    color: var(--light-text);
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.edit-btn:hover {
+    background-color: var(--hover-color);
 }
 
 /* Delete button styling */
 .delete-btn {
-  background-color: #dc3545;
-  color: white;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 4px;
-  cursor: pointer;
+    background-color: #662222;
+    color: var(--light-text);
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.delete-btn:hover {
+    background-color: #993333;
 }
 
 /* Hover effects */
 #user-table tr:hover {
-  background-color: #f5f5f5;
+    background-color: var(--hover-color);
 }
 
 /* Pagination styling */
 .pagination {
-  display: flex;
-  gap: 10px;
-  margin-top: 20px;
-  align-items: center;
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    align-items: center;
 }
 
 .pagination button {
-  background-color: #2c87c5;
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 4px;
-  cursor: pointer;
+    background-color: var(--accent-color);
+    color: var(--light-text);
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.pagination button:hover {
+    background-color: var(--hover-color);
 }
 
 .pagination span {
-  margin: 0 10px;
+    margin: 0 10px;
 }
 
 .form-section {
-    background-color: white;
+    background-color: var(--card-bg);
     padding: 2rem;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--border-color);
 }
 
 .form-container {
@@ -313,25 +312,14 @@ nav ul li a:hover {
     display: block;
     margin-bottom: 0.5rem;
     font-weight: bold;
-}
-
-.form-control {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 1rem;
-}
-
-.form-control:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.3);
+    color: var(--text-color);
 }
 
 textarea.form-control {
     resize: vertical;
     min-height: 100px;
+    background-color: var(--secondary-color);
+    color: var(--text-color);
 }
 
 .checkbox-group {
@@ -365,12 +353,13 @@ textarea.form-control {
 .dropdown-content {
     display: none;
     position: absolute;
-    background-color: white;
+    background-color: var(--card-bg);
     min-width: 160px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
     z-index: 1;
     border-radius: 4px;
     overflow: hidden;
+    border: 1px solid var(--border-color);
 }
 
 .dropdown-content a {
@@ -378,10 +367,11 @@ textarea.form-control {
     padding: 12px 16px;
     text-decoration: none;
     display: block;
+    transition: all 0.3s;
 }
 
 .dropdown-content a:hover {
-    background-color: #f1f1f1;
+    background-color: var(--hover-color);
 }
 
 .dropdown:hover .dropdown-content {
@@ -389,10 +379,12 @@ textarea.form-control {
 }
 
 footer {
-    background-color: var(--dark-bg);
-    color: white;
-    padding: 2rem 0;
+    background-color: var(--background-light);
+    color: var(--text-color);
+    padding: 0.5rem 0;
     text-align: center;
+    border-top: 1px solid var(--border-color);
+    width: 100%;
 }
 
 .footer-content {
@@ -404,7 +396,7 @@ footer {
 
 .footer-content h3 {
     margin-top: 0;
-    color: var(--secondary-color);
+    color: var(--light-text);
 }
 
 .footer-content ul {
@@ -418,22 +410,23 @@ footer {
 }
 
 .footer-content ul li a {
-    color: #ddd;
+    color: var(--text-color);
     text-decoration: none;
+    transition: all 0.3s;
 }
 
 .footer-content ul li a:hover {
-    color: white;
+    color: var(--light-text);
 }
 
-.social-icons {
+/*.social-icons {
     display: flex;
     justify-content: flex-start;
     margin-top: 1rem;
 }
 
 .social-icons a {
-    color: white;
+    color: var(--light-text);
     margin-right: 1rem;
     width: 40px;
     height: 40px;
@@ -441,182 +434,321 @@ footer {
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: rgba(255, 255, 255, 0.1);
-    transition: background-color 0.3s;
+    background-color: var(--accent-color);
+    transition: all 0.3s;
 }
 
 .social-icons a:hover {
-    background-color: var(--primary-color);
+    background-color: var(--hover-color);
 }
 
 .copyright {
     margin-top: 2rem;
     padding-top: 1rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid var(--border-color);
+}*/
+
+/* Component section */
+.component-section {
+    background-color: var(--card-bg);
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    margin-bottom: 40px;
+    border: 1px solid var(--border-color);
 }
 
-/* Modal styles */
-.modal {
+/* Drag and Drop Styles */
+.futuristic-drag-drop-container {
+    display: flex;
+    gap: 30px;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+}
+
+.futuristic-drag-items {
+    flex: 1;
+    min-width: 200px;
+}
+
+.futuristic-drag-item {
+    background-color: var(--accent-color);
+    color: var(--text-color);
+    padding: 16px;
+    margin-bottom: 15px;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    cursor: move;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    user-select: none;
+}
+
+.futuristic-drag-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+}
+
+.futuristic-drag-item.dragging {
+    opacity: 0.7;
+    transform: scale(1.05);
+}
+
+.futuristic-drop-zone {
+    flex: 2;
+    min-width: 300px;
+    min-height: 200px;
+    border: 2px dashed var(--border-color);
+    border-radius: 4px;
+    padding: 20px;
+    background-color: var(--light-bg);
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-color);
+}
+
+.futuristic-drop-zone.drag-over {
+    border-color: var(--accent-color);
+    background-color: var(--hover-color);
+}
+
+/* Modal Styles */
+.futuristic-btn {
+    background-color: var(--accent-color);
+    color: var(--light-text);
+    border: none;
+    padding: 12px 24px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.futuristic-btn:hover {
+    background-color: var(--hover-color);
+}
+
+.futuristic-modal {
     display: none;
     position: fixed;
-    z-index: 1050;
+    z-index: 1000;
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
     overflow: auto;
-    background-color: rgba(0, 0, 0, 0.6);
+    background-color: rgba(0, 0, 0, 0.7);
     backdrop-filter: blur(5px);
-    display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.modal-content {
-    background-color: #fff;
-    padding: 25px;
-    border-radius: 12px;
-    width: 90%;
-    max-width: 450px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-    position: relative;
-    animation: fadeIn 0.3s ease-in-out;
-    text-align: center;
-}
-
-.modal-header {
-    font-size: 20px;
-    font-weight: bold;
-    margin-bottom: 15px;
-    color: #333;
-}
-
-.modal-body {
-    font-size: 16px;
-    color: #555;
-    margin-bottom: 20px;
-}
-
-.modal-footer {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-}
-
-.modal button {
-    padding: 10px 18px;
-    border: none;
+.futuristic-modal-content {
+    background-color: var(--card-bg);
+    margin: auto;
+    padding: 30px;
     border-radius: 6px;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: bold;
-    transition: all 0.2s ease-in-out;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    position: relative;
+    animation: modalFadeIn 0.3s ease-out;
+    border: 1px solid var(--border-color);
 }
 
-.modal .confirm-btn {
-    background-color: #007bff;
-    color: white;
-}
-
-.modal .confirm-btn:hover {
-    background-color: #0056b3;
-}
-
-.modal .close-btn {
-    background-color: #ff4d4d;
-    color: white;
-}
-
-.modal .close-btn:hover {
-    background-color: #cc0000;
-}
-
-@keyframes fadeIn {
+@keyframes modalFadeIn {
     from {
         opacity: 0;
-        transform: scale(0.9);
+        transform: translateY(-30px);
     }
     to {
         opacity: 1;
-        transform: scale(1);
+        transform: translateY(0);
     }
 }
 
-.close-modal {
+.futuristic-close-modal {
     position: absolute;
-    top: 12px;
-    right: 15px;
+    right: 20px;
+    top: 20px;
     font-size: 24px;
-    font-weight: bold;
-    color: #333;
+    color: var(--text-color);
     cursor: pointer;
-    background: none;
-    border: none;
-    outline: none;
-    transition: color 0.2s ease-in-out, transform 0.2s ease-in-out;
+    transition: color 0.3s ease;
 }
 
-.close-modal:hover {
-    color: #ff4d4d;
-    transform: scale(1.2);
+.futuristic-close-modal:hover {
+    color: var(--light-text);
 }
 
+.futuristic-modal-content h3 {
+    margin-top: 0;
+    color: var(--light-text);
+    font-size: 24px;
+}
+
+.futuristic-modal-content p {
+    margin-bottom: 30px;
+    font-size: 16px;
+    color: var(--text-color);
+}
+
+.futuristic-confirm-btn {
+    background-color: #662222;
+}
+
+.futuristic-confirm-btn:hover {
+    background-color: #993333;
+}
+
+/* Empty state */
+.futuristic-drop-zone-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.futuristic-drop-icon {
+    font-size: 40px;
+    margin-bottom: 15px;
+    color: var(--border-color);
+}
+
+.futuristic-drop-text {
+    font-size: 18px;
+    text-align: center;
+}
+
+/* Accordion Styles */
+#custom-accordion {
+    background-color: transparent;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 700px;
+    margin: 20px auto;
+    border: 1px solid var(--border-color);
+}
+
+.custom-accordion-item {
+    border-bottom: 1px solid var(--border-color);
+}
+
+.custom-accordion-item:last-child {
+    border-bottom: none;
+}
+
+.custom-accordion-header {
+    padding: 18px;
+    background-color: var(--accent-color);
+    color: var(--light-text);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 16px;
+    font-weight: bold;
+    transition: all 0.3s ease-in-out;
+}
+
+.custom-accordion-header:hover {
+    background-color: var(--hover-color);
+}
+
+.custom-accordion-header::after {
+    content: '\002B';
+    font-weight: bold;
+    margin-left: 10px;
+    transition: transform 0.3s ease-in-out;
+}
+
+.custom-accordion-header.active::after {
+    content: "\2212";
+    transform: rotate(180deg);
+}
+
+.custom-accordion-content {
+    padding: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out, padding 0.3s ease;
+    background-color: var(--card-bg);
+}
+
+.custom-accordion-content.active {
+    padding: 18px;
+    max-height: 200px;
+}
+
+.custom-accordion-content p {
+    margin: 0;
+    color: var(--text-color);
+}
 
 /* Tabs styles */
 .tabs {
     overflow: hidden;
-    border: 1px solid #ccc;
-    background-color: #f1f1f1;
-    border-radius: 8px 8px 0 0;
+    border: 1px solid var(--border-color);
+    background-color: var(--secondary-color);
+    border-radius: 6px 6px 0 0;
 }
 
 .tab-button {
-    background-color: inherit;
+    background-color: transparent;
     float: left;
     border: none;
     outline: none;
     cursor: pointer;
     padding: 14px 16px;
-    transition: 0.3s;
+    transition: all 0.3s;
     font-size: 17px;
+    color: var(--text-color);
 }
 
 .tab-button:hover {
-    background-color: #ddd;
+    background-color: var(--hover-color);
 }
 
 .tab-button.active {
-    background-color: white;
-    border-bottom: 3px solid var(--primary-color);
+    background-color: var(--card-bg);
+    border-bottom: 2px solid var(--accent-color);
+    color: var(--light-text);
 }
 
 .tab-content {
     display: none;
     padding: 30px;
-    padding-bottom: 50px;
-    border: 1px solid #ccc;
+    border: 1px solid var(--border-color);
     border-top: none;
-    border-radius: 0 0 8px 8px;
-    background-color: white;
+    border-radius: 0 0 6px 6px;
+    background-color: var(--card-bg);
 }
 
 /* Progress bar styles */
 .progress-container {
     width: 100%;
     height: 20px;
-    background-color: #e0e0e0;
-    border-radius: 10px;
+    background-color: var(--secondary-color);
+    border-radius: 4px;
     margin-bottom: 1rem;
-    margin-top:1rem ;
+    margin-top: 1rem;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
 }
 
 .progress-bar {
     height: 100%;
-    background-color: var(--primary-color);
-    border-radius: 10px;
+    background-color: var(--accent-color);
+    border-radius: 4px;
     width: 0;
     transition: width 0.5s;
-    margin-bottom: 1rem;
 }
 
 .tooltip {
@@ -628,17 +760,19 @@ footer {
     visibility: hidden;
     opacity: 0;
     width: 120px;
-    background-color: #333;
-    color: white;
+    background-color: var(--dark-bg);
+    color: var(--text-color);
     text-align: center;
-    border-radius: 6px;
-    padding: 5px;
+    border-radius: 4px;
+    padding: D5px;
     position: absolute;
     z-index: 1;
     bottom: 125%;
     left: 50%;
     margin-left: -60px;
     transition: opacity 0.3s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--border-color);
 }
 
 .tooltip-text::after {
@@ -649,91 +783,12 @@ footer {
     margin-left: -5px;
     border-width: 5px;
     border-style: solid;
-    border-color: #333 transparent transparent transparent;
+    border-color: var(--dark-bg) transparent transparent transparent;
 }
 
-/* Drag and drop styles */
-.drag-container {
-    padding: 1rem;
-    background-color: #f1f1f1;
-    border-radius: 8px;
-}
-
-.draggable {
-    padding: 10px;
-    background-color: white;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    margin-bottom: 10px;
-    cursor: move;
-}
-
-.drop-zone {
-    min-height: 150px;
-    border: 2px dashed #ccc;
-    border-radius: 8px;
-    padding: 1rem;
-    background-color: white;
-    margin-top: 1rem;
-}
-
-/* Animation styles */
-.animate-fade {
-    animation: fadeIn 1s;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-.animate-slide {
-    animation: slideIn 1s;
-}
-
-@keyframes slideIn {
-    from { transform: translateX(-100%); }
-    to { transform: translateX(0); }
-}
-
-/* Accordion styles */
-.accordion {
-    background-color: white;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.accordion-item {
-    border-bottom: 1px solid #ddd;
-}
-
-.accordion-header {
-    padding: 15px;
-    background-color: #f9f9f9;
-    cursor: pointer;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.accordion-header:after {
-    content: '\002B';
-    font-weight: bold;
-    float: right;
-    margin-left: 5px;
-}
-
-.accordion-header.active:after {
-    content: "\2212";
-}
-
-.accordion-content {
-    padding: 0 15px;
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.2s ease-out;
-    background-color: white;
+.tooltip:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
 }
 
 /* Date picker styles */
@@ -744,12 +799,12 @@ footer {
 .datepicker-calendar {
     display: none;
     position: absolute;
-    background-color: white;
-    border: 1px solid #ddd;
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
     border-radius: 4px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     z-index: 10;
-    padding: 10px;
+    padding: 15px;
     width: 240px;
 }
 
@@ -758,6 +813,21 @@ footer {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 10px;
+    color: var(--light-text);
+}
+
+.datepicker-header button {
+    background: transparent;
+    border: none;
+    color: var(--text-color);
+    cursor: pointer;
+    font-size: 16px;
+    padding: 5px;
+    transition: all 0.3s;
+}
+
+.datepicker-header button:hover {
+    color: var(--light-text);
 }
 
 .datepicker-grid {
@@ -768,6 +838,69 @@ footer {
 
 .datepicker-day {
     text-align: center;
-    padding: 5px;
+    padding: 8px;
     cursor: pointer;
     border-radius: 4px;
+    transition: all 0.3s;
+    color: var(--text-color);
+}
+
+.datepicker-day:hover {
+    background-color: var(--hover-color);
+    color: var(--light-text);
+}
+
+
+  
+  /* Make sure iframe takes full width */
+  .iframe-container {
+    background-color: #282828;
+    border-radius: 8px;
+    padding: 0;
+    margin: 20px 0;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+  
+  #iframe-toggle {
+    background-color: #5c8a8a;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    margin-bottom: 10px;
+  }
+  
+  #iframe-toggle:hover {
+    background-color: #3a3a3a;
+  }
+  
+  #iframe-btn {
+    background-color: #5c8a8a;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    margin-top: 12px;
+  }
+  
+  #iframe-btn:hover {
+    background-color: #3a3a3a;
+  }
+  
+  .form-group {
+    margin-top: 15px;
+  }
+  
+  /* Make sure iframe takes full width */
+  #practice-iframe {
+    border: none;
+    display: block;
+    width: 100%;
+  }

@@ -336,6 +336,8 @@
         </div>
     </section>
 
+
+
     <!-- Widgets Section -->
   <!--   <section class="section" id="widgets">
         <div class="container">
@@ -393,37 +395,58 @@
     </section> -->
 
     <!-- Advanced Section -->
-    <section class="section" id="advanced">
     <div class="container">
         <div class="section-title">
-            <h2>Advanced Interactions</h2>
+    <h2>Advanced Interactions</h2>
+    
+    <h3>Drag and Drop</h3>
+    <div class="futuristic-drag-drop-container">
+        <div class="futuristic-drag-items">
+            <div class="futuristic-drag-item" draggable="true" id="item1">Item 1</div>
+            <div class="futuristic-drag-item" draggable="true" id="item2">Item 2</div>
+            <div class="futuristic-drag-item" draggable="true" id="item3">Item 3</div>
         </div>
-        <div class="advanced-section">
-            <h3>Drag and Drop</h3>
-            <div class="drag-drop-container">
-                <div class="drag-items">
-                    <div class="drag-item" draggable="true" id="item1">Item 1</div>
-                    <div class="drag-item" draggable="true" id="item2">Item 2</div>
-                    <div class="drag-item" draggable="true" id="item3">Item 3</div>
-                </div>
-                <div class="drop-zone" id="drop-zone">
-                    Drop items here
-                </div>
-            </div>
-            
-            <h3>Modal Windows</h3>
-            <button class="btn" id="open-modal">Open Modal</button>
-            <div class="modal" id="modal">
-                <div class="modal-content">
-                    <span class="close-modal">&times;</span>
-                    <h3>Modal Title</h3>
-                    <p>This is a modal window that you can interact with.</p>
-                    <button class="btn" id="modal-confirm">Confirm</button>
-                </div>
+        <div class="futuristic-drop-zone" id="futuristic-drop-zone">
+            <div class="futuristic-drop-zone-empty">
+                <div class="futuristic-drop-icon">⬇️</div>
+                <div class="futuristic-drop-text">Drop items here</div>
             </div>
         </div>
     </div>
-</section>
+    
+    <h3>Modal Windows</h3>
+    <button class="futuristic-btn" id="futuristic-open-modal">Open Modal</button>
+    <div class="futuristic-modal" id="futuristic-modal">
+        <div class="futuristic-modal-content">
+            <span class="futuristic-close-modal">&times;</span>
+            <h3>Modal Title</h3>
+            <p>This is a modal window with a futuristic design that won't affect the rest of your site.</p>
+            <button class="futuristic-btn futuristic-confirm-btn" id="futuristic-modal-confirm">Confirm</button>
+        </div>
+    </div>
+    
+    <h3>Accordion</h3>
+    <div id="custom-accordion">
+        <div class="custom-accordion-item">
+            <div class="custom-accordion-header">Section 1</div>
+            <div class="custom-accordion-content">
+                <p>Content for section 1.</p>
+            </div>
+        </div>
+        <div class="custom-accordion-item">
+            <div class="custom-accordion-header">Section 2</div>
+            <div class="custom-accordion-content">
+                <p>Content for section 2.</p>
+            </div>
+        </div>
+        <div class="custom-accordion-item">
+            <div class="custom-accordion-header">Section 3</div>
+            <div class="custom-accordion-content">
+                <p>Content for section 3.</p>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- This is the section for our iframe -->
 <section class="section" id="iframes">
@@ -492,7 +515,7 @@
     <!-- Footer Section -->
     <footer id="main-footer">
         <div class="container">
-            <p>&copy; 2023 Automation Practice Portal. All rights reserved.</p>
+            <p>&copy; 2025 Automation Practice Portal. All rights reserved.</p>
         </div>
     </footer>
 </body>
