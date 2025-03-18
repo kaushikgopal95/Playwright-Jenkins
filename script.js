@@ -327,24 +327,34 @@ function initDatePicker() {
     }
 }
 
+// Your JavaScript file (e.g., slider.js)
+
 function initSlider() {
     const slider = document.getElementById('slider');
     const sliderValue = document.getElementById('slider-value');
     const resetButton = document.getElementById('reset-slider');
-
-    if (slider && sliderValue) {
-        slider.addEventListener('input', function () {
-            sliderValue.textContent = this.value;
-        });
-
-        if (resetButton) {
-            resetButton.addEventListener('click', function () {
-                slider.value = 50; // Reset slider to default value
-                sliderValue.textContent = 50; // Update displayed value
-            });
-        }
-    }
+    
+    // Check if elements exist
+    console.log("Slider:", slider);
+    console.log("Slider Value:", sliderValue);
+    console.log("Reset Button:", resetButton);
+    
+    // Add event listener for slider input
+    slider.addEventListener('input', function() {
+        console.log("Slider value changed to:", this.value);
+        sliderValue.textContent = this.value;
+    });
+    
+    // Add event listener for reset button
+    resetButton.addEventListener('click', function() {
+        console.log("Reset button clicked");
+        slider.value = 0;
+        sliderValue.textContent = "0";
+    });
 }
+
+// Call the function when the page loads
+document.addEventListener('DOMContentLoaded', initSlider);
 
 
 function initProgressBar() {
