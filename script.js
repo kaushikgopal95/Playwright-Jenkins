@@ -56,8 +56,19 @@ function initForms() {
                 password
             });
             
-            alert('Registration successful!');
+            const successMessage = document.getElementById('successMessage');
+            successMessage.textContent = 'Registration successful!';
+            successMessage.style.color = 'green';
+            successMessage.style.padding = '10px';
+            successMessage.style.border = '1px solid green';
             this.reset();
+
+            setTimeout(function() {
+            successMessage.textContent = '';
+            successMessage.style.color = '';
+            successMessage.style.padding = '';
+            successMessage.style.border = '';
+            }, 3000);
         });
     }
 }
