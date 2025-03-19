@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automation Practice Portal</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="..\src\script.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <!-- Header Section -->
+    <header id="main-header">
+        <div class="container">
+            <div class="logo" id="site-logo">
+                <span>AutomationPractice</span>
+            </div>
+            <nav id="main-nav">
+                <ul>
+                    <li><a href="#home" class="nav-link active" data-test-id="home-link">Home</a></li>
+                    <li><a href="#forms" class="nav-link" data-test-id="forms-link">Forms</a></li>
+                    <li><a href="#tables" class="nav-link" data-test-id="tables-link">Tables</a></li>
+                    <!-- <li><a href="#widgets" class="nav-link" data-test-id="widgets-link">Widgets</a></li> -->
+                    <li><a href="#advanced" class="nav-link" data-test-id="advanced-link">Advanced</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="nav-link" data-test-id="more-link">More <i class="fas fa-caret-down"></i></a>
+                        <div class="dropdown-content">
+                            <a href="#iframes" data-test-id="iframes-link">iFrames</a>
+                            <a href="#alerts" data-test-id="alerts-link">Alerts</a>
+                            <a href="#dynamic" data-test-id="dynamic-link">Dynamic Content</a>
+                        </div>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="container">
+            <h1 class="animate-fade" id="hero-title"> Automation Practice Portal</h1>
+            <p class="animate-fade" id="hero-subtitle">A comprehensive website designed to help you master web and API automation testing with complex selectors and diverse UI elements.</p>
+            <a href="#forms" class="btn btn-accent" id="get-started-btn">Get Started</a>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <!-- <section class="section" id="features">
+        <div class="container">
+            <div class="section-title">
+                <h2>Features</h2>
+            </div>
+            <div class="features">
+                <div class="feature-card" data-feature="forms">
+                    <img src="https://picsum.photos/300/150" alt="Forms Feature">
+                    <div class="content">
+                        <h3>Complex Forms</h3>
+                        <p>Practice with various form elements including inputs, selects, checkboxes, and file uploads.</p>
+                    </div>
+                </div>
+                <div class="feature-card" data-feature="tables">
+                    <img src="https://picsum.photos/300/150" alt="Tables Feature">
+                    <div class="content">
+                        <h3>Dynamic Tables</h3>
+                        <p>Interactive tables with sorting, filtering, and pagination capabilities.</p>
+                    </div>
+                </div>
+                <div class="feature-card" data-feature="widgets">
+                    <img src="https://picsum.photos/300/150" alt="Widgets Feature">
+                    <div class="content">
+                        <h3>UI Widgets</h3>
+                        <p>Various UI widgets like date pickers, sliders, and progress bars.</p>
+                    </div>
+                </div>
+                <div class="feature-card" data-feature="iframes">
+                    <img src="https://picsum.photos/300/150" alt="iFrames Feature">
+                    <div class="content">
+                        <h3>iFrames</h3>
+                        <p>Practice switching between iFrames and handling nested content.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section> -->
+
+    <!-- Forms Section -->
+    <section class="section" id="forms">
+        <div class="container">
+            <div class="section-title">
+                <h2>Forms Practice</h2>
+            </div>
+            <div class="form-section">
+                <h3>User Registration Form</h3>
+                <form id="registration-form" class="form-container">
+                    <div class="form-group">
+                        <label for="username">Username:</label>
+                        <input type="text" id="username" name="username" class="form-control" placeholder="Enter username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email Address:</label>
+                        <input type="email" id="email" name="email" class="form-control" placeholder="Enter email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password:</label>
+                        <input type="password" id="password" name="password" class="form-control" placeholder="Enter password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirm-password">Confirm Password:</label>
+                        <input type="password" id="confirm-password" name="confirm-password" class="form-control" placeholder="Confirm password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="dob">Date of Birth:</label>
+                        <input type="date" id="dob" name="dob" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="country">Country:</label>
+                        <select id="country" name="country" class="form-control" required>
+                            <option value="">Select a country</option>
+                            <option value="us">United States</option>
+                            <option value="ca">Canada</option>
+                            <option value="uk">United Kingdom</option>
+                            <option value="au">Australia</option>
+                            <option value="in">India</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Gender:</label>
+                        <div class="radio-group">
+                            <label>
+                                <input type="radio" name="gender" value="male" required> Male
+                            </label>
+                            <label>
+                                <input type="radio" name="gender" value="female"> Female
+                            </label>
+                            <label>
+                                <input type="radio" name="gender" value="other"> Other
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Departments:</label>
+                        <div class="checkbox-group">
+                            <label>
+                                <input type="checkbox" name="interests" value="tech"> Technology
+                            </label>
+                        </div>
+                        <div class="checkbox-group">
+                            <label>
+                                <input type="checkbox" name="interests" value="sports"> IT
+                            </label>
+                        </div>
+                        <div class="checkbox-group">
+                            <label>
+                                <input type="checkbox" name="interests" value="music"> HR
+                            </label>
+                        </div>
+                        <div class="checkbox-group">
+                            <label>
+                                <input type="checkbox" name="interests" value="travel"> Marketing
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="bio">Bio:</label>
+                        <textarea id="bio" name="bio" class="form-control" placeholder="Tell us about yourself"></textarea>
+                    </div>
+                    <!-- <div class="form-group">
+                        <label for="profile-pic">Profile Picture:</label>
+                        <input type="file" id="profile-pic" name="profile-pic" class="form-control">
+                    </div> -->
+                    <div class="form-group">
+                        <label class="checkbox-group">
+                            <input type="checkbox" id="terms" name="terms" required>
+                            I agree to the terms and conditions
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-success" id="submit-btn">Register</button>
+                        <button type="reset" class="btn" id="reset-btn">Reset</button>
+                    </div>
+                    <div id="successMessage"></div>
+                </form>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Tables Section -->
+    <section class="section" id="tables">
+        <div class="container">
+            <div class="section-title">
+                <h2>Tables Practice</h2>
+            </div>
+            <div class="tables-section">
+                <h3>User Data Table</h3>
+                <div class="table-controls">
+                    <input type="text" id="table-search" placeholder="Search..." class="form-control">
+                    <select id="table-filter" class="form-control">
+                        <option value="all">All Departments</option>
+                        <option value="it">IT</option>
+                        <option value="hr">HR</option>
+                        <option value="marketing">Marketing</option>
+                        <option value="finance">Finance</option>
+                    </select>
+                </div>
+                <table id="user-table">
+                    <thead>
+                        <tr>
+                            <th data-sort="id">ID <i class="fas fa-sort"></i></th>
+                            <th data-sort="name">Name <i class="fas fa-sort"></i></th>
+                            <th data-sort="email">Email <i class="fas fa-sort"></i></th>
+                            <th data-sort="department">Department <i class="fas fa-sort"></i></th>
+                            <th data-sort="status">Gender <i class="fas fa-sort"></i></th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr data-id="1" data-department="it">
+                            <td>1</td>
+                            <td>John Doe</td>
+                            <td>john.doe@example.com</td>
+                            <td>IT</td>
+                            <td>Male</td>
+                            <td>
+                                <button class="btn btn-sm edit-btn" data-id="1">Edit</button>
+                                <button class="btn btn-sm btn-accent delete-btn" data-id="1">Delete</button>
+                            </td>
+                        </tr>
+                        <tr data-id="2" data-department="hr">
+                            <td>2</td>
+                            <td>Jane Smith</td>
+                            <td>jane.smith@example.com</td>
+                            <td>HR</td>
+                            <td>Female</td>
+                            <td>
+                                <button class="btn btn-sm edit-btn" data-id="2">Edit</button>
+                                <button class="btn btn-sm btn-accent delete-btn" data-id="2">Delete</button>
+                            </td>
+                        </tr>
+                        <tr data-id="3" data-department="marketing">
+                            <td>3</td>
+                            <td>Bob Johnson</td>
+                            <td>bob.johnson@example.com</td>
+                            <td>Marketing</td>
+                            <td>Male</td>
+                            <td>
+                                <button class="btn btn-sm edit-btn" data-id="3">Edit</button>
+                                <button class="btn btn-sm btn-accent delete-btn" data-id="3">Delete</button>
+                            </td>
+                        </tr>
+                        <tr data-id="4" data-department="finance">
+                            <td>4</td>
+                            <td>Alice Brown</td>
+                            <td>alice.brown@example.com</td>
+                            <td>Finance</td>
+                            <td>Female</td>
+                            <td>
+                                <button class="btn btn-sm edit-btn" data-id="4">Edit</button>
+                                <button class="btn btn-sm btn-accent delete-btn" data-id="4">Delete</button>
+                            </td>
+                        </tr>
+                        <tr data-id="5" data-department="it">
+                            <td>5</td>
+                            <td>Charlie Wilson</td>
+                            <td>charlie.wilson@example.com</td>
+                            <td>IT</td>
+                            <td>Male</td>
+                            <td>
+                                <button class="btn btn-sm edit-btn" data-id="5">Edit</button>
+                                <button class="btn btn-sm btn-accent delete-btn" data-id="5">Delete</button>
+                            </td>
+                        </tr>
+                        <tr data-id="6" data-department="it">
+                            <td>6</td>
+                            <td>Kaushik</td>
+                            <td>kaushik.gopal@example.com</td>
+                            <td>IT</td>
+                            <td>Male</td>
+                            <td>
+                                <button class="btn btn-sm edit-btn" data-id="6">Edit</button>
+                                <button class="btn btn-sm btn-accent delete-btn" data-id="6">Delete</button>
+                            </td>
+                        </tr>
+                        <tr data-id="7" data-department="hr">
+                            <td>7</td>
+                            <td>Rahul</td>
+                            <td>Rahul@example.com</td>
+                            <td>HR</td>
+                            <td>Male</td>
+                            <td>
+                                <button class="btn btn-sm edit-btn" data-id="7">Edit</button>
+                                <button class="btn btn-sm btn-accent delete-btn" data-id="7">Delete</button>
+                            </td>
+                        </tr>
+                        <tr data-id="8" data-department="marketing">
+                            <td>8</td>
+                            <td>Will</td>
+                            <td>will.johnson@example.com</td>
+                            <td>Marketing</td>
+                            <td>Female</td>
+                            <td>
+                                <button class="btn btn-sm edit-btn" data-id="8">Edit</button>
+                                <button class="btn btn-sm btn-accent delete-btn" data-id="8">Delete</button>
+                            </td>
+                        </tr>
+                        <tr data-id="9" data-department="finance">
+                            <td>9</td>
+                            <td>Alice Suresh</td>
+                            <td>alice.suresh@example.com</td>
+                            <td>Finance</td>
+                            <td>Female</td>
+                            <td>
+                                <button class="btn btn-sm edit-btn" data-id="9">Edit</button>
+                                <button class="btn btn-sm btn-accent delete-btn" data-id="9">Delete</button>
+                            </td>
+                        </tr>
+                        <tr data-id="10" data-department="it">
+                            <td>10</td>
+                            <td>Charlie House</td>
+                            <td>charlie.house@example.com</td>
+                            <td>IT</td>
+                            <td>Male</td>
+                            <td>
+                                <button class="btn btn-sm edit-btn" data-id="10">Edit</button>
+                                <button class="btn btn-sm btn-accent delete-btn" data-id="10">Delete</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="pagination">
+                    <button class="btn" id="prev-page" disabled>Previous</button>
+                    <span id="page-info">Page 1 of 1</span>
+                    <button class="btn" id="next-page" disabled>Next</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+    <!-- Widgets Section -->
+  <!--   <section class="section" id="widgets">
+        <div class="container">
+            <div class="section-title">
+                <h2>UI Widgets Practice</h2>
+            </div>
+            <div class="form-section">
+                <div class="tabs">
+                    <button class="tab-button active" data-tab="tab1">Date Picker</button>
+                    <button class="tab-button" data-tab="tab2">Slider</button>
+                    <button class="tab-button" data-tab="tab3">Progress Bar</button>
+                    <button class="tab-button" data-tab="tab4">Tooltips</button>
+                </div>
+                
+                <div id="tab1" class="tab-content" style="display: block;">
+                    <h3>Date Picker</h3>
+                    <div class="form-group">
+                        <label for="datepicker">Select a date:</label>
+                        <div class="datepicker">
+                            <input type="text" id="datepicker" class="form-control" readonly placeholder="Click to select a date">
+                            <div class="datepicker-calendar" id="datepicker-calendar">
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="tab2" class="tab-content">
+                        <h3>Slider</h3>
+                        <div class="form-group">
+                            <label for="slider">Range Value: <span id="slider-value">0</span></label>
+                            <input type="range" id="slider" min="0" max="100" value="0" class="form-control">
+                        </div>
+                        <button id="reset-slider" class="btn btn-primary">Reset</button>
+                    </div>
+
+                
+                <div id="tab3" class="tab-content">
+                    <h3>Progress Bar</h3>
+                    <div class="progress-container">
+                        <div class="progress-bar" id="progress-bar" style="width: 0%"></div>
+                        <button class="btn" id="progress-btn">Start</button>
+                    </div>
+                </div>
+                
+                <div id="tab4" class="tab-content">
+                    <h3>Tooltips</h3>
+                    <div class="tooltip-container">
+                        <button class="btn tooltip" data-tooltip="This is a tooltip">Hover Me</button>
+                        <button class="btn tooltip" data-tooltip="Another tooltip example">Hover Me Too</button>
+                    </div>
+</div>
+            </div>
+        </div>
+    </section> -->
+
+    <!-- Advanced Section -->
+    <div class="container">
+        <div class="section-title">
+    <h2>Advanced Interactions</h2>
+    
+    <h3>Drag and Drop</h3>
+    <div class="futuristic-drag-drop-container">
+        <div class="futuristic-drag-items">
+            <div class="futuristic-drag-item" draggable="true" id="item1">Item 1</div>
+            <div class="futuristic-drag-item" draggable="true" id="item2">Item 2</div>
+            <div class="futuristic-drag-item" draggable="true" id="item3">Item 3</div>
+        </div>
+        <div class="futuristic-drop-zone" id="futuristic-drop-zone">
+            <div class="futuristic-drop-zone-empty">
+                <div class="futuristic-drop-icon">⬇️</div>
+                <div class="futuristic-drop-text">Drop items here</div>
+            </div>
+        </div>
+    </div>
+    <div class="components-container">
+    <h3>Modal Windows</h3>
+    <button class="futuristic-btn" id="futuristic-open-modal">Open Modal</button>
+    <div class="futuristic-modal" id="futuristic-modal">
+        <div class="futuristic-modal-content">
+            <span class="futuristic-close-modal">&times;</span>
+            <h3>Modal Title</h3>
+            <p>This is a modal window with a futuristic design that won't affect the rest of your site.</p>
+            <button class="futuristic-btn futuristic-confirm-btn" id="futuristic-modal-confirm">Confirm</button>
+        </div>
+    </div>
+    
+    <h3>Accordion</h3>
+    <div id="custom-accordion">
+        <div class="custom-accordion-item">
+            <div class="custom-accordion-header">Section 1</div>
+            <div class="custom-accordion-content">
+                <p>Content for section 1.</p>
+            </div>
+        </div>
+        <div class="custom-accordion-item">
+            <div class="custom-accordion-header">Section 2</div>
+            <div class="custom-accordion-content">
+                <p>Content for section 2.</p>
+            </div>
+        </div>
+        <div class="custom-accordion-item">
+            <div class="custom-accordion-header">Section 3</div>
+            <div class="custom-accordion-content">
+                <p>Content for section 3.</p>
+            </div>
+        </div>
+    </div>
+    </div>
+</div>
+
+<!-- This is the section for our iframe -->
+<section class="section" id="iframes">
+    <div class="container">
+        <div class="section-title">
+            <h2>iFrames Practice</h2>
+        </div>
+        <div class="iframes-section">
+            <h3>Interacting with iFrames</h3>
+            <button id="iframe-toggle">Hide iFrame</button>
+            <div class="iframe-container" id="iframe-content">
+                <!-- This is your iframe - make sure the src points to a real page -->
+                <iframe src="iframe-content.html" width="100%" height="300" id="practice-iframe"></iframe>
+            </div>
+            <div class="form-group">
+                <button class="btn" id="iframe-btn">Send Message to iFrame</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Alerts Section -->
+<section class="section" id="alerts">
+    <div class="container">
+        <div class="section-title">
+            <h2>Alerts Practice</h2>
+        </div>
+        <div class="alerts-section">
+            <h3>JavaScript Alerts</h3>
+            <div class="buttons-container">
+                <button class="btn" id="alert-btn">Show Alert</button>
+                <button class="btn" id="confirm-btn">Show Confirm</button>
+                <button class="btn" id="prompt-btn">Show Prompt</button>
+            </div>
+            <div class="result-container">
+                <p>Result: <span id="alert-result">No action yet</span></p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Dynamic Content Section -->
+<section class="section" id="dynamic">
+    <div class="container">
+        <div class="section-title">
+            <h2>Dynamic Content</h2>
+        </div>
+        <div class="dynamic-section">
+            <h3>AJAX Content Loading</h3>
+            <div class="form-group">
+                <button class="btn" id="load-data-btn">Load Data</button>
+            </div>
+            <div id="dynamic-content">
+                <p>Click the button to load dynamic content here...</p>
+            </div>
+            
+            <h3>Delayed Elements</h3>
+            <div class="form-group">
+                <button class="btn" id="delayed-btn">Show Delayed Element</button>
+            </div>
+            <div id="delayed-container"></div>
+        </div>
+    </div>
+</section>
+
+    <!-- Footer Section -->
+    <footer id="main-footer">
+        <div class="container">
+            <p>&copy; 2025 Automation Practice Portal. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>
