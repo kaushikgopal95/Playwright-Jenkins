@@ -3,7 +3,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize all components
     initNavigation();
-    initForms();
+    //initForms();
     initTables();
     //initWidgets();
     initAlerts();
@@ -31,50 +31,243 @@ function initNavigation() {
 }
 
 // Form Functions
+// Global counter to track initialization
+
+let initCount = 0;
+
+// Main function to initialize forms
 function initForms() {
+    initCount++;
+    console.log(`initForms called ${initCount} times`);
+    
+    // Get reference to the form
     const registrationForm = document.getElementById('registration-form');
     
-    if (registrationForm) {
-        registrationForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Validate form
-            const username = document.getElementById('username').value;
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('confirm-password').value;
-            
-            if (password !== confirmPassword) {
-                alert('Passwords do not match');
-                return;
-            }
-            
-            // Simulate form submission
-            console.log('Form submitted:', {
-                username,
-                email,
-                password
-            });
-            
-            const successMessage = document.getElementById('successMessage');
-            if (successMessage) {
-                successMessage.textContent = 'Registration successful!';
-                successMessage.style.color = 'green';
-                successMessage.style.padding = '10px';
-                successMessage.style.border = '1px solid green';
-                this.reset();
-
-                setTimeout(function() {
-                    successMessage.textContent = '';
-                    successMessage.style.color = '';
-                    successMessage.style.padding = '';
-                    successMessage.style.border = '';
-                }, 3000);
-            }
-        });
+    // Only proceed if the form exists
+    if (!registrationForm) {
+        console.error('Registration form not found!');
+        return;
     }
+    
+    // Remove any existing event listeners by cloning
+    const newForm = registrationForm.cloneNode(true);
+    registrationForm.parentNode.replaceChild(newForm, registrationForm);
+    
+    // Set up form submission handling
+    setupFormSubmission(newForm);
 }
 
+// Separate function to handle form submission
+function setupFormSubmission(form) {
+    // Flag to prevent multiple submissions
+    let isSubmitting = false;
+    
+    // Add event listener for form submission
+    form.addEventListener('submit', function(e) {
+        // Prevent default form submission
+        e.preventDefault();
+        e.stopPropagation();
+        
+        console.log('Form submit event fired at:', new Date().toISOString());
+        
+        // Prevent multiple submissions
+        if (isSubmitting) {
+            console.log('Form is already being submitted, ignoring duplicate submission');
+            return;
+        }
+        
+        isSubmitting = true;
+        
+        // Collect form data
+        const formData = collectFormData(form);
+        
+        // Validate form data
+        const validationError = validateFormData(formData);
+        if (validationError) {
+            alert(validationError);
+            isSubmitting = false;
+            return;
+        }
+        
+        // Send data to API
+        submitFormToAPI(formData)
+            .then(result => {
+                // Display result message
+                displayResultMessage(result, form);
+            })
+            .catch(error => {
+                // Handle any errors
+                console.error('Error submitting form:', error);
+                alert('Error submitting form: ' + error.message);
+            })
+            .finally(() => {
+                // Reset submission flag
+                isSubmitting = false;
+            });
+    });
+}
+
+// Function to collect form data
+function collectFormData(form) {
+    // Get basic form fields
+    const username = document.getElementById('username').value;
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirm-password').value;
+    const dob = document.getElementById('dob').value;
+    const country = document.getElementById('country').value;
+    const bio = document.getElementById('bio').value;
+    const terms = document.getElementById('terms').checked;
+    
+    // Get selected gender
+    let gender = '';
+    const genderRadios = document.querySelectorAll('input[name="gender"]');
+    genderRadios.forEach(radio => {
+        if (radio.checked) {
+            gender = radio.value;
+        }
+    });
+    
+    // Get selected interests
+    const interests = [];
+    const interestCheckboxes = document.querySelectorAll('input[name="interests"]');
+    interestCheckboxes.forEach(checkbox => {
+        if (checkbox.checked) {
+            interests.push(checkbox.value);
+        }
+    });
+    
+    // Handle profile picture
+    const profilePicInput = document.getElementById('profile-pic');
+    let profilePic = "";
+    
+    // For simplicity, we'll just use an empty string for the profile pic
+    // since we're sending JSON data
+    
+    // Return collected data
+    return {
+        username,
+        email,
+        password,
+        confirmPassword,
+        dob,
+        country,
+        gender,
+        interests,
+        bio,
+        profilePic,
+        terms
+    };
+}
+
+// Function to validate form data
+function validateFormData(formData) {
+    // Check if passwords match
+    if (formData.password !== formData.confirmPassword) {
+        return 'Passwords do not match';
+    }
+    
+    // Check if terms are accepted
+    if (!formData.terms) {
+        return 'You must agree to the terms and conditions';
+    }
+    
+    // Add more validation as needed
+    
+    // Return null if validation passes
+    return null;
+}
+
+// Function to submit form data to API
+function submitFormToAPI(formData) {
+    // Create a JSON object for the API
+    const userData = {
+        username: formData.username,
+        email: formData.email,
+        password: formData.password,
+        dob: formData.dob,
+        country: formData.country,
+        gender: formData.gender,
+        interests: formData.interests,
+        bio: formData.bio,
+        profilePic: "",  // Empty string for profile pic
+        terms: formData.terms
+    };
+    
+    console.log('Sending JSON data to API:', userData);
+    
+    // Use fetch API to send JSON data
+    return fetch('http://localhost:3000/api/register', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(userData)
+    })
+    .then(response => {
+        console.log('Response status:', response.status);
+        
+        // Handle the response
+        if (!response.ok) {
+            throw new Error(`Server returned ${response.status}: ${response.statusText}`);
+        }
+        
+        // Try to parse the response as JSON
+        return response.json()
+            .catch(error => {
+                // Handle successful responses without JSON bodies
+                if (response.status === 201 || response.status === 200) {
+                    return { 
+                        success: true, 
+                        message: 'Registration successful!',
+                        status: response.status
+                    };
+                }
+                throw error;
+            });
+    });
+}
+
+// Function to display result message
+function displayResultMessage(result, form) {
+    const successMessage = document.getElementById('successMessage');
+    if (!successMessage) {
+        console.warn('Success message element not found');
+        return;
+    }
+    
+    if (result.success) {
+        // Show success message
+        successMessage.textContent = result.message || 'Registration successful!';
+        successMessage.style.color = 'green';
+        successMessage.style.padding = '10px';
+        successMessage.style.border = '1px solid green';
+        
+        // Reset the form on success
+        form.reset();
+    } else {
+        // Show error message
+        successMessage.textContent = result.message || 'Registration failed!';
+        successMessage.style.color = 'red';
+        successMessage.style.padding = '10px';
+        successMessage.style.border = '1px solid red';
+    }
+    
+    // Clear the message after a delay
+    setTimeout(function() {
+        successMessage.textContent = '';
+        successMessage.style.color = '';
+        successMessage.style.padding = '';
+        successMessage.style.border = '';
+    }, 3000);
+}
+
+// Wait for the DOM to be fully loaded before initializing
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM fully loaded');
+    // Initialize forms directly - don't call any other functions
+    initForms();
+});
 
 
 
