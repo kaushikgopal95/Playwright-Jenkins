@@ -74,7 +74,7 @@ nav ul li a:hover {
 
 .hero {
     background-color: var(--secondary-color);
-    background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('hero.jpg');
+    background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('/hero.jpg');
     background-size: cover;
     background-position: center;
     color: var(--text-color);
