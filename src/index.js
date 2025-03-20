@@ -5,7 +5,7 @@ const mysql = require('mysql2');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const bcrypt = require('bcryptjs');
-
+const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -13,6 +13,7 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, '..', 'public')));
 
 // Create MySQL Connection
 // First connect without specifying a database
@@ -167,7 +168,9 @@ app.post('/api/register', async (req, res) => {
     res.status(500).json({ success: false, message: 'Server error' });
   }
 });
-
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'public', 'index.html'));
+});
 // Start server
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

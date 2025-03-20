@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  # Node.js Application
+  app:
+    build: .
+    container_name: Automation-pipeline
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - DB_HOST=db
+      - DB_USER=root
+      - DB_PASSWORD=admin
+      - DB_NAME=Automation pipeline
+    depends_on:
+      - db
+    networks:
+      - app-network
+    
+
+  # MySQL Database
+  db:
+    image: mysql:8.0
+    container_name: mysql
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_DATABASE: user_registration
+      
+    networks:
+      - app-network
+
+# Persistent Volumes
+volumes:
+  mysql-data:
+    driver: local
+
+# Docker Networks
+networks:
+  app-network:
+    driver: bridge
