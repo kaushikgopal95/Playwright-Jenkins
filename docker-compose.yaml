@@ -28,11 +28,22 @@ services:
     ports:
       - "3306:3306"
     environment:
-      MYSQL_ROOT_PASSWORD: admin
-      MYSQL_DATABASE: user_registration
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
       
     networks:
       - app-network
+
+  tests:
+    image: mcr.microsoft.com/playwright
+    depends_on:
+      - web
+    working_dir: /app
+    volumes:
+      - .:/app
+    command: ["npx", "playwright", "test"]
+    networks:
+      - mynetwork
 
 # Persistent Volumes
 volumes:
