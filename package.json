@@ -16,6 +16,6 @@
     "express": "^4.21.2",
     "mysql2": "^3.13.0",
     "@playwright/test": "^1.41.0"  
-    // newly added manually
+   
   }
 }
