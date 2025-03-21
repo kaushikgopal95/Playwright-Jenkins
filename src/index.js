@@ -16,41 +16,32 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
-// Create MySQL Connection Pool
-const pool = mysql.createPool({
-  // host: process.env.DB_HOST || 'db',
-  host: 'localhost',
-  user: process.env.DB_USER,  
-  password: process.env.DB_PASSwORD,
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0
-});
-
-// Get a connection and set up the database
-pool.getConnection((err, connection) => {
-  if (err) {
-    console.error('Error connecting to MySQL:', err);
-    return;
-  }
-  console.log('Connected to MySQL');
+// Database connection and initialization function
+const initializeDatabase = async () => {
+  // Create MySQL Connection Pool with retry capability built into mysql2
+  const pool = mysql.createPool({
+    host: process.env.DB_HOST || 'db',
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0,
+    enableKeepAlive: true,
+    // Add connection retry options
+    acquireTimeout: 60000, // 60 seconds to acquire a connection
+  });
   
-  // Create database if it doesn't exist
-  connection.query('CREATE DATABASE IF NOT EXISTS user_registration', (err) => {
-    if (err) {
-      console.error('Error creating database:', err);
-      connection.release();
-      return;
-    }
-    console.log('Database created or already exists');
-    
-    // Switch to the created database
-    connection.query('USE user_registration', (err) => {
-      if (err) {
-        console.error('Error switching to database:', err);
-        connection.release();
-        return;
-      }
+  const promisePool = pool.promise();
+  
+  // Function to create database and tables
+  const setupDatabase = async () => {
+    try {
+      // Create database if it doesn't exist
+      await promisePool.query('CREATE DATABASE IF NOT EXISTS user_registration');
+      console.log('Database created or already exists');
+      
+      // Use the database
+      await promisePool.query('USE user_registration');
       console.log('Using user_registration database');
       
       // Create users table
@@ -69,116 +60,154 @@ pool.getConnection((err, connection) => {
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
       `;
+      await promisePool.query(createTableQuery);
+      console.log('Users table created or already exists');
       
-      connection.query(createTableQuery, (err) => {
-        if (err) {
-          console.error('Error creating users table:', err);
-          connection.release();
-          return;
-        }
-        console.log('Users table created or already exists');
-        
-        // Create interests table
-        const createInterestsTableQuery = `
-          CREATE TABLE IF NOT EXISTS interests (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            user_id INT NOT NULL,
-            interest VARCHAR(50) NOT NULL,
-            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-            UNIQUE(user_id, interest)
-          )
-        `;
-        
-        connection.query(createInterestsTableQuery, (err) => {
-          if (err) {
-            console.error('Error creating interests table:', err);
-          } else {
-            console.log('Interests table created or already exists');
-          }
-          // Release the connection back to the pool
-          connection.release();
-        });
-      });
-    });
-  });
-});
-
-// Create a promise wrapper for pool to use with async/await
-const promisePool = pool.promise();
-
-// Routes
-app.post('/api/register', async (req, res) => {
-  try {
-    const { 
-      username, 
-      email, 
-      password, 
-      dob, 
-      country, 
-      gender, 
-      interests, 
-      bio, 
-      profilePic, 
-      terms 
-    } = req.body;
-    
-    // Hash password
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
-    
-    // Insert user
-    const insertUserQuery = `
-      INSERT INTO users 
-      (username, email, password, date_of_birth, country, gender, bio, profile_pic, terms_accepted)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `;
-    
-    const [results] = await promisePool.execute(
-      insertUserQuery,
-      [username, email, hashedPassword, dob, country, gender, bio, profilePic, terms]
-    );
-    
-    const userId = results.insertId;
-    
-    // Handle interests if provided
-    if (interests && interests.length > 0) {
-      // Create an array of value arrays for batch insert
-      const interestValues = interests.map(interest => [userId, interest]);
+      // Create interests table
+      const createInterestsTableQuery = `
+        CREATE TABLE IF NOT EXISTS interests (
+          id INT AUTO_INCREMENT PRIMARY KEY,
+          user_id INT NOT NULL,
+          interest VARCHAR(50) NOT NULL,
+          FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+          UNIQUE(user_id, interest)
+        )
+      `;
+      await promisePool.query(createInterestsTableQuery);
+      console.log('Interests table created or already exists');
       
-      // Insert interests
-      const insertInterestsQuery = `
-        INSERT INTO interests (user_id, interest) VALUES ?
+      return { pool, promisePool };
+    } catch (err) {
+      console.error('Error setting up database:', err);
+      throw err;
+    }
+  };
+  
+  // Implement connection retry with proper async/await pattern
+  const MAX_RETRIES = 20;
+  const INITIAL_BACKOFF = 1500;
+  const MAX_BACKOFF = 30000;
+  
+  let retries = 0;
+  let backoff = INITIAL_BACKOFF;
+  
+  while (retries < MAX_RETRIES) {
+    try {
+      console.log(`Attempt ${retries + 1}/${MAX_RETRIES} to connect to MySQL...`);
+      
+      // Try to connect and set up database
+      const connection = await promisePool.getConnection();
+      console.log('Successfully connected to MySQL');
+      connection.release();
+      
+      return await setupDatabase();
+    } catch (err) {
+      retries++;
+      
+      if (retries >= MAX_RETRIES) {
+        console.error('Maximum retry attempts reached. Could not connect to MySQL.');
+        throw err;
+      }
+      
+      console.error(`Failed to connect to MySQL (attempt ${retries}/${MAX_RETRIES}):`, err.message);
+      console.log(`Retrying in ${backoff/1000} seconds...`);
+      
+      // Wait using a promise-based delay
+      await new Promise(resolve => setTimeout(resolve, backoff));
+      
+      // Increase backoff with exponential strategy, but cap it
+      backoff = Math.min(backoff * 1.5, MAX_BACKOFF);
+    }
+  }
+};
+
+// Routes handler - only define routes after database is initialized
+const setupRoutes = (promisePool) => {
+  app.post('/api/register', async (req, res) => {
+    try {
+      const { 
+        username, 
+        email, 
+        password, 
+        dob, 
+        country, 
+        gender, 
+        interests, 
+        bio, 
+        profilePic, 
+        terms 
+      } = req.body;
+      
+      // Hash password
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(password, salt);
+      
+      // Insert user
+      const insertUserQuery = `
+        INSERT INTO users 
+        (username, email, password, date_of_birth, country, gender, bio, profile_pic, terms_accepted)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
       `;
       
-      try {
-        await promisePool.query(insertInterestsQuery, [interestValues]);
-      } catch (err) {
-        console.error('Error saving interests:', err);
-        // Still continue as user was created successfully
+      const [results] = await promisePool.execute(
+        insertUserQuery,
+        [username, email, hashedPassword, dob, country, gender, bio, profilePic, terms]
+      );
+      
+      const userId = results.insertId;
+      
+      // Handle interests if provided
+      if (interests && interests.length > 0) {
+        // Create an array of value arrays for batch insert
+        const interestValues = interests.map(interest => [userId, interest]);
+        
+        // Insert interests
+        const insertInterestsQuery = `
+          INSERT INTO interests (user_id, interest) VALUES ?
+        `;
+        
+        try {
+          await promisePool.query(insertInterestsQuery, [interestValues]);
+        } catch (err) {
+          console.error('Error saving interests:', err);
+          // Still continue as user was created successfully
+        }
       }
+      
+      return res.status(201).json({ 
+        success: true, 
+        message: 'Registration successful',
+        userId
+      });
+    } catch (error) {
+      console.error('Server error:', error);
+      res.status(500).json({ 
+        success: false, 
+        message: 'Registration failed', 
+        error: error.message 
+      });
     }
+  });
+
+  app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, '..', 'public', 'index.html'));
+  });
+};
+
+// Initialize database, then start server
+(async () => {
+  try {
+    const { promisePool } = await initializeDatabase();
     
-    return res.status(201).json({ 
-      success: true, 
-      message: 'Registration successful',
-      userId
-    });
+    // Set up routes with the initialized database connection
+    setupRoutes(promisePool);
     
-  } catch (error) {
-    console.error('Server error:', error);
-    res.status(500).json({ 
-      success: false, 
-      message: 'Registration failed', 
-      error: error.message 
+    // Start server only after database is ready
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
     });
+  } catch (err) {
+    console.error('Failed to initialize application:', err);
+    process.exit(1);
   }
-});
-
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'public', 'index.html'));
-});
-
-// Start server
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+})();

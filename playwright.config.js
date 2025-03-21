@@ -41,9 +41,12 @@ export default defineConfig({
     baseURL: 'http://localhost:3000'// Viewport used for all pages in the context.
   },
   webServer: {
-    command: 'npm start',
-    port: 3000,
-  },
+    command: "node src/index.js",
+    url: "http://app:3000",
+    timeout: 60000, // Wait up to 60 seconds
+    reuseExistingServer: true
+  }
+  
   
   /* Configure projects for major browsers */
   projects: [
