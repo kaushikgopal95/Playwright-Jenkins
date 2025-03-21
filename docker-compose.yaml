@@ -2,19 +2,19 @@ version: '3.8'
 
 services:
   # Node.js Application
-  # Node.js Application
-app:
-  build: .
-  container_name: Automation-pipeline
-  restart: always
-  ports:
-    - "3000:3000"
-  env_file:
-    - .env
-  depends_on:
-    - db
-  networks:
-    - app-network
+  
+  app:
+    build: .
+    container_name: Automation-pipeline
+    restart: always
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    depends_on:
+      - db
+    networks:
+      - app-network
     
 
   # MySQL Database
