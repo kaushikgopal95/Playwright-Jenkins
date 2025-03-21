@@ -50,10 +50,10 @@ export default defineConfig({
   
   /* Configure projects for major browsers */
   projects: [
-    // {
-    //   name: 'chromium',
-    //   use: { ...devices['Desktop Chrome'] },
-    // },
+    {
+      name: 'chromium',
+      use: { ...devices['Desktop Chrome'] },
+    },
     
     
     // {
@@ -61,12 +61,12 @@ export default defineConfig({
     //   use: { ...devices['Desktop Firefox'] },
     // },
 
-     {
-      name: 'Google Chrome',
-       use: { 
-        ...devices['Desktop Chrome'], 
-        channel: 'chrome' },
-     },
+    //  {
+    //   name: 'Google Chrome',
+    //    use: { 
+    //     ...devices['Desktop Chrome'], 
+    //     channel: 'chrome' },
+    //  },
 
     /* Test against mobile viewports. */
     // {
