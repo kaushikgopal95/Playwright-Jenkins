@@ -45,7 +45,7 @@ export default defineConfig({
     url: "http://app:3000",
     timeout: 60000, // Wait up to 60 seconds
     reuseExistingServer: true
-  }
+  },
   
   
   /* Configure projects for major browsers */
