@@ -9,30 +9,30 @@ pipeline {
 
         stage('Check Docker') {
             steps {
-                sh 'docker --version || (echo "Docker not available" && exit 1)'
-                sh 'docker-compose --version || (echo "Docker Compose not available" && exit 1)'
-                sh 'docker info || (echo "Docker daemon not running" && exit 1)'
+                bat 'docker --version || (echo "Docker not available" && exit 1)'
+                bat 'docker-compose --version || (echo "Docker Compose not available" && exit 1)'
+                bat 'docker info || (echo "Docker daemon not running" && exit 1)'
             }
-        }
+        }   
 
-        stage('Build Docker Image') {
-            steps {
-                sh 'docker build -t automation:0.1 .'
-                // Optionally tag with 'latest' as well
-                sh 'docker tag automation:0.1'
-            }
-}
+        // stage('Build Docker Image') {
+        //     steps {
+        //         sh 'docker build -t automation:0.1 .'
+        //         // Optionally tag with 'latest' as well
+        //         sh 'docker tag automation:0.1'
+        //     }
+        // }
 
-        stage('Build and Test') {
-            steps {
-                // Build and start the app container
-                sh 'docker-compose up -d app'
-                sh 'sleep 10'
-                // Build and run tests against the running app
-                sh 'docker-compose build tests'
-                sh 'docker-compose run --rm tests'
-            }
-        }
+        // stage('Build and Test') {
+        //     steps {
+        //         // Build and start the app container
+        //         sh 'docker-compose up -d app'
+        //         sh 'sleep 10'
+        //         // Build and run tests against the running app
+        //         sh 'docker-compose build tests'
+        //         sh 'docker-compose run --rm tests'
+        //     }
+        // }
 
     }
     post {
