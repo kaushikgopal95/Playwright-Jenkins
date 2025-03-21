@@ -4,7 +4,7 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm install
 COPY . .
-RUN npx playwright install --with-deps
+# RUN npx playwright install --with-deps
 
 # Set environment variable to tell tests where to find the app
 ENV APP_URL=http://app:3000
