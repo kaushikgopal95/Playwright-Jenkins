@@ -9,7 +9,7 @@ const { test, expect } = require('@playwright/test');
  */
 test('Homepage should load successfully', async ({ page }) => {
   // Visit the homepage
-  await page.goto(process.env.APP_URL || 'http://localhost:3000');
+  await page.goto('http://app:3000');
   
   // Check if the Amazon logo is visible
   await expect(page.locator('id=site-logo')).toBeVisible();

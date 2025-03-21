@@ -36,6 +36,7 @@ export default defineConfig({
     trace: 'on-first-retry',
     headless: true,
     screenshot: 'only-on-failure',
+    ignoreHTTPSErrors: true,
     video:'on-first-retry',
     viewport: { width: 1536, height: 730 }, 
     baseURL: 'http://localhost:3000'// Viewport used for all pages in the context.
