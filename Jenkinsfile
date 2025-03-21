@@ -15,13 +15,13 @@ pipeline {
             }
         }   
 
-        // stage('Build Docker Image') {
-        //     steps {
-        //         sh 'docker build -t automation:0.1 .'
-        //         // Optionally tag with 'latest' as well
-        //         sh 'docker tag automation:0.1'
-        //     }
-        // }
+        stage('Build Docker Image') {
+            steps {
+                bat 'docker build -t automation:0.1 .'
+                // Optionally tag with 'latest' as well
+                bat 'docker tag automation:0.1'
+            }
+        }
 
         // stage('Build and Test') {
         //     steps {
