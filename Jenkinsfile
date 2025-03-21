@@ -38,7 +38,7 @@ pipeline {
     post {
         always {
             // Clean up - stop all containers
-            sh 'docker-compose down || true'
+            bat 'docker-compose down || true'
             cleanWs()
         }
     }
