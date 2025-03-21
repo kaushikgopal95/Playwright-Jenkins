@@ -2,7 +2,7 @@
 FROM node:lts-alpine
 
 # Set working directory inside the container
-WORKDIR /usr/src/app
+WORKDIR /app
 
 # Copy package.json and package-lock.json for efficient caching
 COPY package.json package-lock.json ./
