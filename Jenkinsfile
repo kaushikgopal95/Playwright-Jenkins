@@ -19,7 +19,7 @@ pipeline {
             steps {
                 bat 'docker build -t automation:0.1 .'
                 // Optionally tag with 'latest' as well
-                bat 'docker tag automation:0.1'
+                bat 'docker tag automation:0.1 automation:latest'
             }
         }
 
