@@ -27,7 +27,7 @@ pipeline {
             steps {
                 // Build and start the app container
                 bat 'docker-compose up -d app'
-                sh 'sleep 10'
+                // sh 'sleep 10'
                 // Build and run tests against the running app
                 bat 'docker-compose build tests'
                 bat 'docker-compose run --rm tests'
