@@ -42,29 +42,22 @@ pipeline {
                 
                 // Add these debugging commands
                 bat 'docker-compose run tests ls -la /usr/src/app'
-                bat 'docker-compose run tests npx playwright test'
                 bat 'docker-compose run tests ls -la /usr/src/app/playwright-reports'
+                bat 'docker-compose run tests sh -c "npx playwright test && ls -la /usr/src/app"'
                 
-                // Original test run
-                bat 'docker-compose run tests'
-                
-                // Debug the local directory
-                bat 'dir'
-                bat 'dir playwright-reports || echo No reports found in playwright-reports'
-                bat 'dir playwright-report || echo No reports found in playwright-report'
             }
         }
 
-        stage('Collect Report') {
-            steps {
-                // Create reports directory first
-                bat 'dir playwright-reports || echo No reports found'
+    //     stage('Collect Report') {
+    //         steps {
+    //             // Create reports directory first
+    //             bat 'dir playwright-reports || echo No reports found'
                 
-                // Run tests with volume mounted
-                archiveArtifacts artifacts: 'playwright-reports/**/*', fingerprint: true, allowEmptyArchive: true
-            }
-        }
-    }
+    //             // Run tests with volume mounted
+    //             archiveArtifacts artifacts: 'playwright-reports/**/*', fingerprint: true, allowEmptyArchive: true
+    //         }
+    //     }
+    // }
     post {
         always {
             // Clean up - stop all containers
