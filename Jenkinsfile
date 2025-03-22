@@ -41,25 +41,43 @@ pipeline {
                 // Create directory for reports if it doesn't exist
                 bat 'if not exist playwright-report mkdir playwright-report'
                 
-                // Use script block to capture container ID and use it in subsequent commands
                 script {
-                    // Get container ID using returnStdout and store it in a variable
-                    def containerId = bat(script: '@docker-compose ps -q tests', returnStdout: true).trim()
-                    echo "Container ID: ${containerId}"
+                    // Get the current directory name for the project name prefix
+                    def projectDir = bat(script: '@echo %CD%', returnStdout: true).trim()
+                    def projectName = projectDir.tokenize('\\').last().replaceAll(' ', '').toLowerCase()
+                    echo "Project directory: ${projectDir}"
+                    echo "Project name: ${projectName}"
                     
-                    // Use the captured container ID for the docker cp command
+                    // List all containers to see what's available
+                    bat 'docker ps -a'
+                    
+                    // Try to get the container ID using docker-compose
+                    def containerId = bat(script: '@docker-compose ps -a -q tests', returnStdout: true).trim()
+                    echo "Container ID from docker-compose: ${containerId}"
+                    
                     if (containerId) {
-                        bat "docker cp ${containerId}:/app/playwright-report . || echo Failed to copy reports, container may be stopped"
+                        echo "Attempting to copy reports from container ID: ${containerId}"
+                        bat "docker cp ${containerId}:/app/playwright-report . || echo Failed to copy reports, continuing anyway"
                     } else {
-                        error "Failed to get container ID"
+                        echo "No container found with the service name 'tests'. Trying to find it by pattern..."
+                        
+                        // Try to find the container by a likely name pattern
+                        def containerByPattern = bat(script: '@docker ps -a --filter name=${projectName}_tests -q', returnStdout: true).trim()
+                        echo "Container by pattern: ${containerByPattern}"
+                        
+                        if (containerByPattern) {
+                            echo "Found container by pattern: ${containerByPattern}"
+                            bat "docker cp ${containerByPattern}:/app/playwright-report . || echo Failed to copy reports, continuing anyway"
+                        } else {
+                            echo "Could not find tests container. No reports will be collected."
+                        }
                     }
                 }
                 
-                // Archive the reports as artifacts
+                // Archive the reports as artifacts (if they exist)
                 archiveArtifacts artifacts: 'playwright-report/**/*', fingerprint: true, allowEmptyArchive: true
             }
         }
-
     }
     post {
         always {
