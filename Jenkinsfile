@@ -23,13 +23,35 @@ pipeline {
             }
         }
 
+        // stage('Build and Test') {
+        //     steps {
+        //         // Build and start the app container
+        //         bat 'docker-compose up -d app'
+        //         bat 'docker-compose build tests' 
+        //         bat 'docker-compose run tests'
+        //         bat 'dir playwright-reports'
+        //     }
+        // }
+
+
         stage('Build and Test') {
             steps {
                 // Build and start the app container
                 bat 'docker-compose up -d app'
-                bat 'docker-compose build tests' 
+                bat 'docker-compose build tests'
+                
+                // Add these debugging commands
+                bat 'docker-compose run tests ls -la /app'                 // List all files in the app directory
+                bat 'docker-compose run tests npm test -- --reporter=list' // Run tests with minimal reporter
+                bat 'docker-compose run tests ls -la /app/playwright-reports' // Check if reports directory exists after test
+                
+                // Original test run
                 bat 'docker-compose run tests'
-                bat 'dir playwright-reports'
+                
+                // Debug the local directory
+                bat 'dir'
+                bat 'dir playwright-reports || echo No reports found in playwright-reports'
+                bat 'dir playwright-report || echo No reports found in playwright-report'
             }
         }
 
