@@ -1,4 +1,4 @@
-version: "3.8"
+
 
 services:
   # Node.js Application
@@ -55,6 +55,8 @@ services:
         condition: service_healthy
     networks:
       - app-network
+    volumes:
+      - ./playwright-report:/app/playwright-report
 
 # Persistent Volumes
 volumes:

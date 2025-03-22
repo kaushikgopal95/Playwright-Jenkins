@@ -36,41 +36,13 @@ pipeline {
             }
         }
 
-        stage('Collect Test Reports') {
+        stage('Run Tests') {
             steps {
-                // Create directory for reports if it doesn't exist
-                bat 'if not exist playwright-report mkdir playwright-report'
+                // Create reports directory first
+                bat 'mkdir -p playwright-report'
                 
-                script {
-                    // Get the container ID for the tests service and save it to a file
-                    bat 'docker-compose ps -q tests > container_id.txt'
-                    
-                    // Read the container ID from the file
-                    bat 'set /p CONTAINER_ID=<container_id.txt'
-                    
-                    // Echo the container ID for verification
-                    bat 'echo Container ID: %CONTAINER_ID%'
-                    
-                    // Try to copy the reports using the container ID
-                    bat '''
-                        if defined CONTAINER_ID (
-                            docker cp %CONTAINER_ID%:/app/playwright-report . || echo Failed to copy from /app/playwright-report
-                            
-                            if not exist playwright-report\\*.* (
-                                echo Trying alternative path
-                                docker cp %CONTAINER_ID%:/playwright-report . || echo Failed to copy from /playwright-report
-                            )
-                        ) else (
-                            echo No container ID found for tests service
-                        )
-                    '''
-                }
-                
-                // List what we found (if anything)
-                bat 'dir playwright-report || echo No reports directory found'
-                
-                // Archive the reports as artifacts (if they exist)
-                archiveArtifacts artifacts: 'playwright-report/**/*', fingerprint: true, allowEmptyArchive: true
+                // Run tests with volume mounted
+                bat 'docker-compose run --rm -v %CD%/playwright-report:/app/playwright-report tests'
             }
         }
     }
