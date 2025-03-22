@@ -51,7 +51,7 @@ pipeline {
         stage('Collect Report') {
             steps {
                 // Create reports directory first
-                bat dir
+                bat 'dir'
                 bat 'dir playwright-reports || echo No reports found'
                 
                 // Run tests with volume mounted
