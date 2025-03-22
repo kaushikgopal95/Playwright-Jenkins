@@ -57,7 +57,7 @@ pipeline {
     //             archiveArtifacts artifacts: 'playwright-reports/**/*', fingerprint: true, allowEmptyArchive: true
     //         }
     //     }
-    // }
+    }
     post {
         always {
             // Clean up - stop all containers
