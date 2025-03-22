@@ -41,14 +41,22 @@ pipeline {
                 // Create directory for reports if it doesn't exist
                 bat 'if not exist playwright-report mkdir playwright-report'
                 
-                // First get the container ID and store it in an environment variable
-                bat 'for /f "tokens=*" %%i in (\'docker-compose ps -q tests\') do set CONTAINER_ID=%%i'
-                
-                // Then use that container ID for the copy command
-                bat 'docker cp %CONTAINER_ID%:/app/playwright-report .'
+                // Use script block to capture container ID and use it in subsequent commands
+                script {
+                    // Get container ID using returnStdout and store it in a variable
+                    def containerId = bat(script: '@docker-compose ps -q tests', returnStdout: true).trim()
+                    echo "Container ID: ${containerId}"
+                    
+                    // Use the captured container ID for the docker cp command
+                    if (containerId) {
+                        bat "docker cp ${containerId}:/app/playwright-report . || echo Failed to copy reports, container may be stopped"
+                    } else {
+                        error "Failed to get container ID"
+                    }
+                }
                 
                 // Archive the reports as artifacts
-                archiveArtifacts artifacts: 'playwright-report/**/*', fingerprint: true
+                archiveArtifacts artifacts: 'playwright-report/**/*', fingerprint: true, allowEmptyArchive: true
             }
         }
 
