@@ -30,6 +30,8 @@ pipeline {
                 // sh 'sleep 10'
                 // Build and run tests against the running app
                 bat 'docker-compose build tests'
+                bat 'set | findstr /i url'
+                bat 'echo %APP_URL%' 
                 bat 'docker-compose run --rm tests'
             }
         }

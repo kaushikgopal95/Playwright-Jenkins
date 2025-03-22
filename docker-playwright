@@ -7,6 +7,7 @@ COPY . .
 # RUN npx playwright install --with-deps
 
 # Set environment variable to tell tests where to find the app
-ENV APP_URL=http://app:3000
+# ENV APP_URL=http://app:3000
+ENV APP_URL=http://localhost:3000
 
 CMD ["npx", "playwright", "test"]

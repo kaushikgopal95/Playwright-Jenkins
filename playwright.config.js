@@ -39,11 +39,13 @@ export default defineConfig({
     ignoreHTTPSErrors: true,
     video:'on-first-retry',
     viewport: { width: 1536, height: 730 }, 
-    baseURL: 'http://localhost:3000'// Viewport used for all pages in the context.
+    // baseURL: 'http://app:3000'  
+    // baseURL: 'http://localhost:3000'// Viewport used for all pages in the context.
   },
   webServer: {
     command: "node src/index.js",
-    url: "http://app:3000",
+    // url: "http://app:3000",
+    url: "http://localhost:3000",
     timeout: 60000, // Wait up to 60 seconds
     reuseExistingServer: true
   },

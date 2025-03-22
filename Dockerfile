@@ -1,6 +1,9 @@
 # Use an official Node.js runtime as base image
 FROM node:lts-alpine
 
+# Install curl
+RUN apk add --no-cache curl
+
 # Set working directory inside the container
 WORKDIR /usr/src/app
 

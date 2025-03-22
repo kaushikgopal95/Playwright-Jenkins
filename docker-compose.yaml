@@ -4,6 +4,7 @@ services:
   # Node.js Application
   
   app:
+    entrypoint: ["sh", "-c", "sleep 20 && node src/index.js"]
     build: .
     container_name: Automation-pipeline
     restart: always
@@ -12,7 +13,15 @@ services:
     env_file:
       - .env
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+    healthcheck:
+        test: ["CMD", "curl", "-f", "http://localhost:3000"]
+        interval: 5s
+        timeout: 5s
+        retries: 10
+        start_period: 40s
+
     networks:
       - app-network
     
@@ -33,13 +42,17 @@ services:
       retries: 5 
     networks:
       - app-network
+    volumes:
+       - mysql-data:/var/lib/mysql
+
 
   tests:
     build:
       context: .
       dockerfile: docker-playwright
     depends_on:
-      - app
+      app:
+        condition: service_healthy
     networks:
       - app-network
 
