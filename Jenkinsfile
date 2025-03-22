@@ -28,12 +28,12 @@ pipeline {
                 // Build and start the app container
                 bat 'docker-compose up -d app'
                 bat 'docker-compose build tests' 
-                bat 'docker-compose run --rm tests'
+                bat 'docker-compose run tests'
                 bat 'dir playwright-report'
             }
         }
 
-        stage('Run Tests') {
+        stage('Collect Report') {
             steps {
                 // Create reports directory first
                 bat 'dir playwright-report || echo No reports found'
