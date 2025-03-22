@@ -56,7 +56,7 @@ services:
     networks:
       - app-network
     volumes:
-      - ./playwright-reports:/app/playwright-reports
+      - ./playwright-reports:/usr/src/app/playwright-reports
 
 # Persistent Volumes
 volumes:
