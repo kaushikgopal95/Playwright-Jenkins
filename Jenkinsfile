@@ -27,22 +27,19 @@ pipeline {
             steps {
                 // Build and start the app container
                 bat 'docker-compose up -d app'
-                // sh 'sleep 10'
-                // Build and run tests against the running app
-                bat 'docker-compose build tests'
-                bat 'set | findstr /i url'
-                bat 'echo %APP_URL%' 
+                bat 'docker-compose build tests' 
                 bat 'docker-compose run --rm tests'
+                bat 'dir playwright-report'
             }
         }
 
         stage('Run Tests') {
             steps {
                 // Create reports directory first
-                bat 'mkdir -p playwright-report'
+                bat 'dir playwright-report || echo No reports found'
                 
                 // Run tests with volume mounted
-                bat 'docker-compose run --rm -v %CD%/playwright-report:/app/playwright-report tests'
+                archiveArtifacts artifacts: 'playwright-report/**/*', fingerprint: true, allowEmptyArchive: true
             }
         }
     }
