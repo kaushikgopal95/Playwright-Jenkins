@@ -38,24 +38,17 @@ pipeline {
 
         stage('Collect Test Reports') {
             steps {
-                // Create directory for reports
-                bat 'mkdir -p playwright-report'
+                // Create directory for reports if it doesn't exist
+                bat 'if not exist playwright-report mkdir playwright-report'
                 
-                // Copy reports from the container to Jenkins workspace
-                bat 'docker cp $(docker-compose ps -q tests):/app/playwright-report .'
+                // First get the container ID and store it in an environment variable
+                bat 'for /f "tokens=*" %%i in (\'docker-compose ps -q tests\') do set CONTAINER_ID=%%i'
+                
+                // Then use that container ID for the copy command
+                bat 'docker cp %CONTAINER_ID%:/app/playwright-report .'
                 
                 // Archive the reports as artifacts
                 archiveArtifacts artifacts: 'playwright-report/**/*', fingerprint: true
-                
-                // Optional: Publish HTML reports if you have the HTML Publisher plugin
-                // publishHTML([
-                //     allowMissing: false,
-                //     alwaysLinkToLastBuild: true,
-                //     keepAll: true,
-                //     reportDir: 'playwright-report',
-                //     reportFiles: 'index.html',
-                //     reportName: 'Playwright Test Report'
-                // ])
             }
         }
 
