@@ -41,9 +41,9 @@ pipeline {
                 bat 'docker-compose build tests'
                 
                 // Add these debugging commands
-                bat 'docker-compose run tests ls -la /app'                 // List all files in the app directory
-                bat 'docker-compose run tests npx playwright test' // Run tests with minimal reporter
-                bat 'docker-compose run tests ls -la /app/playwright-reports' // Check if reports directory exists after test
+                bat 'docker-compose run tests ls -la /usr/src/app'
+                bat 'docker-compose run tests npx playwright test'
+                bat 'docker-compose run tests ls -la /usr/src/app/playwright-reports'
                 
                 // Original test run
                 bat 'docker-compose run tests'
