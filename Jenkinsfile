@@ -29,17 +29,17 @@ pipeline {
                 bat 'docker-compose up -d app'
                 bat 'docker-compose build tests' 
                 bat 'docker-compose run tests'
-                bat 'dir playwright-report'
+                bat 'dir playwright-reports'
             }
         }
 
         stage('Collect Report') {
             steps {
                 // Create reports directory first
-                bat 'dir playwright-report || echo No reports found'
+                bat 'dir playwright-reports || echo No reports found'
                 
                 // Run tests with volume mounted
-                archiveArtifacts artifacts: 'playwright-report/**/*', fingerprint: true, allowEmptyArchive: true
+                archiveArtifacts artifacts: 'playwright-reports/**/*', fingerprint: true, allowEmptyArchive: true
             }
         }
     }
