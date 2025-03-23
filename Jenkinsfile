@@ -45,14 +45,17 @@ pipeline {
             // Clean up - stop all containers
             bat 'docker-compose down || true'
             
-            emailext attachLog: true, body: 'Test Body', compressLog: true, mimeType: 'text/html', subject: 'Test Subject', to: 'kaushik.leapus@gmail.com'
-            // emailext body: 'Test Message',
-            //     // recipientProviders: [developers(), requestor()],
-            //     subject: 'Test Subject',
-            //     to: 'kaushik.leapus@gmail.com'
+            emailext (
+                subject: "${currentBuild.result}: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
+                body: """<p>Build Status: ${currentBuild.result}</p>
+                <p>Build URL: ${env.BUILD_URL}</p>
+                <p>See attached Playwright report</p>""",
+                to: 'kaushik.leapus@gmail.com',
+                attachmentsPattern: 'playwright-reports/**',
+                mimeType: 'text/html'
+            )
             cleanWs()
         }
     }
 }
 
-jdwporomdsmguugc 
