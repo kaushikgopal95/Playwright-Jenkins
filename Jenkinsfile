@@ -51,7 +51,7 @@ pipeline {
                 to: 'kaushik.leapus@gmail.com',
                 attachmentsPattern: 'playwright-reports/**',
                 mimeType: 'text/html',
-                compressAttachments: true
+                // compressAttachments: true
             )
         }
     }
