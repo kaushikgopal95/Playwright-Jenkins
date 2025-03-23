@@ -52,9 +52,10 @@ pipeline {
                 <p>Build URL: ${env.BUILD_URL}</p>
                 <p>See attached Playwright report</p>""",
                 to: 'kaushik.leapus@gmail.com',
-                attachmentsPattern: 'playwright-reports/**',
+                // attachmentsPattern: 'playwright-reports/**',
                 mimeType: 'text/html',
                 // compressAttachments: true
+                debug: true
             
             )
             cleanWs()
