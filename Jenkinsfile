@@ -37,34 +37,37 @@ pipeline {
         stage('Build and Test') {
             steps {
                 // Build and start the app container
-                bat 'docker-compose up -d app'
+                bat 'docker-compose up -d app --remove-orphans'
                 bat 'docker-compose build tests'
                 
-                // Add these debugging commands
-                bat 'docker-compose run tests ls -la /usr/src/app'
-                bat 'docker-compose run tests ls -la /usr/src/app/playwright-reports'
-                bat 'docker-compose run tests sh -c "npx playwright test && ls -la /usr/src/app"'
-                
+                // Run the tests
+                bat 'docker-compose run tests'
             }
         }
 
         stage('Collect Report') {
             steps {
-                // Create reports directory first
-                bat 'dir'
-                bat 'dir playwright-reports || echo No reports found'
-                
-                // Run tests with volume mounted
+                // Archive the reports
                 archiveArtifacts artifacts: 'playwright-reports/**/*', fingerprint: true, allowEmptyArchive: true
             }
         }
-    }
 
     post {
         always {
             // Clean up - stop all containers
             bat 'docker-compose down || true'
             cleanWs()
+            emailext (
+                subject: "${currentBuild.result}: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
+                body: """<p>Build Status: ${currentBuild.result}</p>
+                <p>Build URL: ${env.BUILD_URL}</p>
+                <p>See attached Playwright report</p>""",
+                to: 'kaushik.leapus@gmail.com',
+                attachmentsPattern: 'playwright-report/**',
+                mimeType: 'text/html',
+                compressAttachments: true
+            )
         }
     }
+}
 }
