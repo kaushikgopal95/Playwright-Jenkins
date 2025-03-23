@@ -46,12 +46,10 @@ pipeline {
             bat 'docker-compose down || true'
             
             
-            emailext (
-                subject: "Test Subject",
-                body: "See Jenkins console output for details.",
-                to: 'kaushik.leapus@gmail.com',
-                mimeType: 'text/html'
-            )
+            emailext body: 'Test Message',
+                // recipientProviders: [developers(), requestor()],
+                subject: 'Test Subject',
+                to: 'kaushik.leapus@gmail.com'
             cleanWs()
         }
     }
