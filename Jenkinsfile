@@ -46,10 +46,10 @@ pipeline {
             bat 'docker-compose down || true'
             
             
-            emailext body: 'Test Message',
-                // recipientProviders: [developers(), requestor()],
-                subject: 'Test Subject',
-                to: 'kaushik.leapus@gmail.com'
+            // emailext body: 'Test Message',
+            //     // recipientProviders: [developers(), requestor()],
+            //     subject: 'Test Subject',
+            //     to: 'kaushik.leapus@gmail.com'
             cleanWs()
         }
     }
