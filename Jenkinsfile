@@ -67,7 +67,7 @@ pipeline {
                 mimeType: 'text/html',
                 compressAttachments: true
             )
+            }
         }
     }
-}
 }
