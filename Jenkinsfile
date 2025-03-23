@@ -28,10 +28,13 @@ pipeline {
                
                 // Run the tests
                 bat 'docker-compose run tests'
+                bat 'docker cp $(docker-compose ps -q tests):/usr/src/app/playwright-reports .'
             }
         }
         stage('Collect Report') {
             steps {
+                bat 'echo Current directory: %CD%'
+                bat 'dir'
                 // Archive the reports
                 archiveArtifacts artifacts: 'playwright-reports/**/*', fingerprint: true, allowEmptyArchive: true
             }
@@ -42,7 +45,8 @@ pipeline {
         always {
             // Clean up - stop all containers
             bat 'docker-compose down || true'
-            cleanWs()
+            
+            
             emailext (
                 subject: "${currentBuild.result}: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
                 body: """<p>Build Status: ${currentBuild.result}</p>
@@ -52,7 +56,9 @@ pipeline {
                 attachmentsPattern: 'playwright-reports/**',
                 mimeType: 'text/html',
                 // compressAttachments: true
+            
             )
+            cleanWs()
         }
     }
 }
