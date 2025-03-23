@@ -45,7 +45,7 @@ pipeline {
             // Clean up - stop all containers
             bat 'docker-compose down || true'
             
-            
+            emailext attachLog: true, body: 'Test Body', compressLog: true, mimeType: 'text/html', subject: 'Test Subject', to: 'kaushik.leapus@gmail.com'
             // emailext body: 'Test Message',
             //     // recipientProviders: [developers(), requestor()],
             //     subject: 'Test Subject',
@@ -55,3 +55,4 @@ pipeline {
     }
 }
 
+jdwporomdsmguugc 
