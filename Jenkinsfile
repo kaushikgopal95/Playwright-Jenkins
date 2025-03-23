@@ -55,7 +55,7 @@ pipeline {
                 // attachmentsPattern: 'playwright-reports/**',
                 mimeType: 'text/html',
                 // compressAttachments: true
-                debug: true
+                // debug: true
             
             )
             cleanWs()
