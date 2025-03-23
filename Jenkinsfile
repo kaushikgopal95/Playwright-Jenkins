@@ -28,18 +28,12 @@ pipeline {
                
                 // Run the tests
                 bat 'docker-compose run tests'
-                // Get container ID and then copy files (Windows compatible)
-                bat '''
-                FOR /F "tokens=*" %%i IN ('docker-compose ps -q tests') DO SET CONTAINER_ID=%%i
-                echo Container ID: %CONTAINER_ID%
-                docker cp %CONTAINER_ID%:/usr/src/app/playwright-reports .
-                '''
+                
             }
         }
         stage('Collect Report') {
             steps {
-                bat 'echo Current directory: %CD%'
-                bat 'dir'
+                
                 // Archive the reports
                 archiveArtifacts artifacts: 'playwright-reports/**/*', fingerprint: true, allowEmptyArchive: true
             }
