@@ -46,10 +46,10 @@ pipeline {
             bat 'docker-compose down || true'
             
             emailext (
-                subject: "${currentBuild.result}: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
+                subject: "Playwright CICD Test Report:'${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
                 body: """<p>Build Status: ${currentBuild.result}</p>
                 <p>Build URL: ${env.BUILD_URL}</p>
-                <p>See attached Playwright report</p>""",
+                <p>Please see the attached Playwright report</p>""",
                 to: 'kaushik.leapus@gmail.com',
                 attachmentsPattern: 'playwright-reports/**',
                 mimeType: 'text/html'
